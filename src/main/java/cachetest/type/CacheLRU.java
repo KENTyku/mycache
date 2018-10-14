@@ -12,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class describing the creation of an LRU cache
@@ -27,21 +29,21 @@ public class CacheLRU extends Cache implements Serializable {
      *
      * @param maxEntries cache size
      */
-    public CacheLRU(int maxEntries) {
+    public CacheLRU(int maxEntries, boolean isFileStore) {
         this.size = maxEntries;
         this.lru = new AlgoritmLRU(size);
-        this.isFileStore = false;
-    }
-
-    /**
-     * Set type of Data Store
-     *
-     * @param isFileStore Type of DataStore
-     */
-    @Override
-    public void setTypeDataStore(boolean isFileStore) {
         this.isFileStore = isFileStore;
     }
+
+//    /**
+//     * Set type of Data Store
+//     *
+//     * @param isFileStore Type of DataStore
+//     */
+//    @Override
+//    public void setTypeDataStore(boolean isFileStore) {
+//        this.isFileStore = isFileStore;
+//    }
 
     /**
      * Adding data to the cache
@@ -51,26 +53,44 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-
+        FileInputStream fileForRead = null;
+        ObjectInputStream inStreamObject = null;
         if (this.isFileStore) {
             try {
-                FileInputStream fileForRead = new FileInputStream("cacheLru.data");
-                ObjectInputStream inStreamObject = new ObjectInputStream(fileForRead);
+                fileForRead = new FileInputStream("cacheLru.data");
+                inStreamObject = new ObjectInputStream(fileForRead);
                 if (this.lru.size() == 0) {
                     this.lru = (AlgoritmLRU) inStreamObject.readObject();
-                    inStreamObject.close();
+//                    inStreamObject.close();
                 }
             } catch (Exception e) {
                 System.out.println("Ошибка загрузки кэша из файла cacheLru.data");
+            } finally {
+                try {
+                    inStreamObject.close();
+                    fileForRead.close();
+                } catch (IOException|NullPointerException ex) {
+                   System.out.println("Ошибка закрытия потока");
+                }
             }
             lru.put(key, data);
+            FileOutputStream fileForWrite = null;
+            ObjectOutputStream outStreamObject = null;
             try {
-                FileOutputStream fileForWrite = new FileOutputStream("cacheLru.data");
-                ObjectOutputStream outStreamObject = new ObjectOutputStream(fileForWrite);
+                fileForWrite = new FileOutputStream("cacheLru.data");
+                outStreamObject = new ObjectOutputStream(fileForWrite);
                 outStreamObject.writeObject(this.lru);
-                outStreamObject.close();
+                
             } catch (IOException e) {
                 System.out.println("Ошибка выгрузки кэша в файл cacheLru.data");
+            }
+            finally{
+                try {
+                    outStreamObject.close();
+                    fileForWrite.close();
+                } catch (IOException|NullPointerException ex) {
+                    Logger.getLogger(CacheLRU.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
             lru.put(key, data);

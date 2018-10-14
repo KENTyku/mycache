@@ -16,8 +16,8 @@ public class CacheTest {
      */
     public static void main(String[] args) {
         System.out.println("Тест LRU");
-        CacheBuilder cacheLRU = new CacheBuilder("LRU", 10);
-        cacheLRU.setTypeDataStore(true);
+        CacheBuilder cacheLRU = new CacheBuilder("LRU", 10,true);
+//        cacheLRU.setTypeDataStore(true);
         cacheLRU.addData(1, "Ижевск");
         cacheLRU.addData(2, "Лондон");
         cacheLRU.addData(3, "Венеция");
@@ -27,6 +27,7 @@ public class CacheTest {
         cacheLRU.addData(6, "Токио");
         cacheLRU.addData(7, "Париж");
         cacheLRU.showData();
+        
         System.out.println("Очистка из оперативной памяти");
         cacheLRU.resetCash();
         cacheLRU.addData(8, "Киев");
@@ -34,17 +35,18 @@ public class CacheTest {
 
         System.out.println();
         System.out.println("Тест LFU");
-        CacheBuilder cacheLFU = new CacheBuilder("LFU", 10);
-        cacheLFU.setTypeDataStore(true);
+        CacheBuilder cacheLFU = new CacheBuilder("LFU", 10,true);
+//        cacheLFU.setTypeDataStore(true);
         cacheLFU.addData(1, "Ижевск");
         cacheLFU.addData(2, "Лондон");
         cacheLFU.addData(3, "Венеция");
         cacheLFU.addData(4, "Берлин");
         cacheLFU.addData(5, "Вашингтон");
-        cacheLFU.getData(3);
+        System.out.println(cacheLFU.getData(3));
         cacheLFU.addData(6, "Токио");
-        cacheLFU.addData(7, "Париж");
+        cacheLFU.addData(7, "Париж");       
         cacheLFU.showData();
+        
         System.out.println("Очистка из оперативной памяти");
         cacheLFU.resetCash();
         cacheLFU.addData(8, "Киев");

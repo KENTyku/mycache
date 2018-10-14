@@ -5,7 +5,7 @@
 package cachetest.type.algoritm;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +16,7 @@ import java.util.Map;
 public class AlgoritmLFU implements Serializable {
 
     private int maxEntries;
-    private LinkedHashMap<Integer, CacheEntryLFU> cache = new LinkedHashMap<Integer, CacheEntryLFU>();
+    private HashMap<Integer, CacheEntryLFU> cache = new HashMap<Integer, CacheEntryLFU>();
 
     /**
      * Constructor
@@ -30,7 +30,7 @@ public class AlgoritmLFU implements Serializable {
     /**
      * Adding data to cache
      *
-     * @param key  for etem cache
+     * @param key for etem cache
      * @param data for etem cache
      */
     public void addCacheEntry(int key, String data) {
@@ -104,14 +104,73 @@ public class AlgoritmLFU implements Serializable {
     /**
      * @return the cache
      */
-    public LinkedHashMap<Integer, CacheEntryLFU> getCache() {
-        return cache;
+    public HashMap<Integer, String> getCache() {
+        HashMap<Integer, String> cachetemp = new HashMap<>();
+        for (Map.Entry<Integer, CacheEntryLFU> entry : cache.entrySet()) {
+            cachetemp.put(entry.getKey(), entry.getValue().getData());
+//            System.out.println(entry.getValue().getData());
+        }
+        return cachetemp;
+    }
+    
+    public void resetCache(){
+        cache.clear();        
     }
 
-    /**
-     * @param aCache the cache to set
-     */
-    public void setCache(LinkedHashMap<Integer, CacheEntryLFU> aCache) {
-        cache = aCache;
+//    /**
+//     * @param aCache the cache to set
+//     */
+//    public void setCache(HashMap<Integer, CacheEntryLFU> aCache) {
+//        cache = aCache;
+//    }
+
+    private class CacheEntryLFU implements Serializable {
+
+        private String data;
+        private int frequency;
+
+        /**
+         * Defaul constructor
+         */
+        CacheEntryLFU() {
+        }
+
+        /**
+         * Get value for entry cache
+         *
+         * @return value for entry cache
+         */
+        public String getData() {
+            return data;
+        }
+
+        /**
+         * Set value for entry cache
+         *
+         * @param data value for entry cache
+         */
+        public void setData(String data) {
+            this.data = data;
+        }
+
+        /**
+         * Get frequency of entry cache
+         *
+         * @return frequency of entry cache
+         */
+        public int getFrequency() {
+            return frequency;
+        }
+
+        /**
+         * Set frequency entry cache
+         *
+         * @param frequency of entry cache
+         */
+        public void setFrequency(int frequency) {
+            this.frequency = frequency;
+        }
+
     }
+
 }

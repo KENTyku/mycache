@@ -4,6 +4,7 @@
  */
 package cachetest.type;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -13,13 +14,19 @@ import java.util.LinkedHashMap;
  */
 abstract public class Cache {
 
-    protected String type;
+    protected String type;//type of cache
     protected int key;
     protected String data;
-    protected int size;
-    protected boolean isFileStore;
+    protected int size;//size of cache
+    protected boolean isFileStore;//type Store
+//    protected String typeDataStore;
+//    Cache(String type, int size, String typeDataStore){
+//        this.type=type;
+//        this.size=size;
+//        this.typeDataStore=typeDataStore;
+//    }
 
-    abstract public void setTypeDataStore(boolean isFileStore);
+//    abstract public void setTypeDataStore(boolean isFileStore);
 
     abstract public void addData(int key, String data);
 
@@ -27,6 +34,6 @@ abstract public class Cache {
 
     abstract public void resetStoreCache();
 
-    abstract public LinkedHashMap<Integer, String> showCache();
+    abstract public HashMap<Integer, String> showCache();
 
 }

@@ -26,24 +26,25 @@ public class CacheBuilder {
      * @param typeCache type Cache
      * @param sizeCache size Cache
      */
-    CacheBuilder(String typeCache, int sizeCache) {
+    CacheBuilder(String typeCache, int sizeCache,boolean isFileStore) {
         this.type = typeCache;
         this.size = sizeCache;
+        
         if (type.equals("LRU")) {
-            this.cache = new CacheLRU(size);
+            this.cache = new CacheLRU(size,isFileStore);
         } else {
-            this.cache = new CasheLFU(size);
+            this.cache = new CasheLFU(size,isFileStore);
         }
     }
-
-    /**
-     * set type of DataStore for cache.
-     *
-     * @param isFileStore true-use HDD. false-use RAM(is defaul).
-     */
-    void setTypeDataStore(boolean isFileStore) {
-        cache.setTypeDataStore(isFileStore);
-    }
+//
+//    /**
+//     * set type of DataStore for cache.
+//     *
+//     * @param isFileStore true-use HDD. false-use RAM(is defaul).
+//     */
+//    void setTypeDataStore(boolean isFileStore) {
+//        cache.setTypeDataStore(isFileStore);
+//    }
 
     /**
      * Adding data to the cache
