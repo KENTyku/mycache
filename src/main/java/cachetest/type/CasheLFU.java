@@ -45,6 +45,7 @@ public class CasheLFU extends Cache implements Serializable {
             if (lfu.getCache().isEmpty()) {
                 lfu = (AlgoritmLFU) Cache.loadFromFile("cacheLfu.data");
             }
+            if (lfu==null) lfu = new AlgoritmLFU(this.size);
             lfu.addCacheEntry(key, data);
             Cache.saveToFile(lfu, "cacheLfu.data");
         } else {

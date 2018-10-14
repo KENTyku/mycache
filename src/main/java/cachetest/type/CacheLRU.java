@@ -41,6 +41,7 @@ public class CacheLRU extends Cache implements Serializable {
             if (this.lru.isEmpty()) {
                 this.lru = (AlgoritmLRU) Cache.loadFromFile("cacheLru.data");
             }
+            if (this.lru==null) this.lru = new AlgoritmLRU(size);
             lru.put(key, data);
             Cache.saveToFile(lru, "cacheLru.data");
         } else {
