@@ -16,35 +16,36 @@ import java.util.Map;
  */
 public class CacheBuilder {
 
-    Cache cache;
-    private final String type;
+    private Cache cache;
     private final int size;
 
     /**
      * Сonstructor of class CacheBuilder
      *
-     * @param typeCache type Cache
-     * @param sizeCache size Cache
+     * @param typeCache
+     * @param sizeCache
+     * @param isFileStore Type
      */
-    CacheBuilder(String typeCache, int sizeCache,boolean isFileStore) {
-        this.type = typeCache;
+    CacheBuilder(String typeCache, int sizeCache, boolean isFileStore) {
         this.size = sizeCache;
-        
-        if (type.equals("LRU")) {
-            this.cache = new CacheLRU(size,isFileStore);
-        } else {
-            this.cache = new CasheLFU(size,isFileStore);
+        switch (typeCache) {
+
+            case "LRU":
+                this.cache = new CacheLRU(size, isFileStore);
+                break;
+            case "LFU":
+                this.cache = new CasheLFU(size, isFileStore);
+                break;
+            default:
+                try {
+                    throw new Exception(typeCache);
+                } catch (Exception e) {
+                    System.out.println("Данный тип кеша " + e.getMessage() + " не поддерживается. "
+                            + "Будет выбран тип LRU");
+                    this.cache = new CacheLRU(size, isFileStore);
+                }
         }
     }
-//
-//    /**
-//     * set type of DataStore for cache.
-//     *
-//     * @param isFileStore true-use HDD. false-use RAM(is defaul).
-//     */
-//    void setTypeDataStore(boolean isFileStore) {
-//        cache.setTypeDataStore(isFileStore);
-//    }
 
     /**
      * Adding data to the cache

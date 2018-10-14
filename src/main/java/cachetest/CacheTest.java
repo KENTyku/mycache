@@ -14,9 +14,9 @@ public class CacheTest {
      * Use for test.
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)throws Exception {
         System.out.println("Тест LRU");
-        CacheBuilder cacheLRU = new CacheBuilder("LRU", 10,true);
+        CacheBuilder cacheLRU = new CacheBuilder("LRU1", 10,true);
 //        cacheLRU.setTypeDataStore(true);
         cacheLRU.addData(1, "Ижевск");
         cacheLRU.addData(2, "Лондон");

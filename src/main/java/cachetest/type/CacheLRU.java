@@ -4,16 +4,9 @@
  */
 package cachetest.type;
 
-import cachetest.type.algoritm.AlgoritmLRU;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  * Class describing the creation of an LRU cache
@@ -35,16 +28,6 @@ public class CacheLRU extends Cache implements Serializable {
         this.isFileStore = isFileStore;
     }
 
-//    /**
-//     * Set type of Data Store
-//     *
-//     * @param isFileStore Type of DataStore
-//     */
-//    @Override
-//    public void setTypeDataStore(boolean isFileStore) {
-//        this.isFileStore = isFileStore;
-//    }
-
     /**
      * Adding data to the cache
      *
@@ -53,45 +36,13 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-        FileInputStream fileForRead = null;
-        ObjectInputStream inStreamObject = null;
+
         if (this.isFileStore) {
-            try {
-                fileForRead = new FileInputStream("cacheLru.data");
-                inStreamObject = new ObjectInputStream(fileForRead);
-                if (this.lru.size() == 0) {
-                    this.lru = (AlgoritmLRU) inStreamObject.readObject();
-//                    inStreamObject.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Ошибка загрузки кэша из файла cacheLru.data");
-            } finally {
-                try {
-                    inStreamObject.close();
-                    fileForRead.close();
-                } catch (IOException|NullPointerException ex) {
-                   System.out.println("Ошибка закрытия потока");
-                }
+            if (this.lru.isEmpty()) {
+                this.lru = (AlgoritmLRU) Cache.loadFromFile("cacheLru.data");
             }
             lru.put(key, data);
-            FileOutputStream fileForWrite = null;
-            ObjectOutputStream outStreamObject = null;
-            try {
-                fileForWrite = new FileOutputStream("cacheLru.data");
-                outStreamObject = new ObjectOutputStream(fileForWrite);
-                outStreamObject.writeObject(this.lru);
-                
-            } catch (IOException e) {
-                System.out.println("Ошибка выгрузки кэша в файл cacheLru.data");
-            }
-            finally{
-                try {
-                    outStreamObject.close();
-                    fileForWrite.close();
-                } catch (IOException|NullPointerException ex) {
-                    Logger.getLogger(CacheLRU.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+            Cache.saveToFile(lru, "cacheLru.data");
         } else {
             lru.put(key, data);
         }
@@ -126,4 +77,46 @@ public class CacheLRU extends Cache implements Serializable {
         return lru;
     }
 
+    /**
+     * Internal Class for
+     */
+    private class AlgoritmLRU extends LinkedHashMap<Integer, String> {
+
+        private int maxEntries;
+
+        /**
+         * Конструктор создаем как родительсткий с заданными значениями
+         * Начальную емкость отображения выбираем в 2 раза больше максимума
+         * хранимых в кэше значений. Этим обеспечиваем быструю работу с
+         * отображением и невозможность увеличения размера отображения при
+         * добавлении в него элементов.
+         *
+         * @param maxEntries Размер кэша
+         */
+        public AlgoritmLRU(int maxEntries) {
+            super(maxEntries * 2, 0.75f, true);//как конструктор родителя 
+            this.maxEntries = maxEntries;
+        }
+
+        /**
+         * метод вызывается при работе метода put() и удаляет самое старое
+         * значение из отображения если возвращает истину(по умолчанию всегда
+         * возвращает ложь). При переопределении добавлено условие, при котором
+         * метод возвращает истину.
+         *
+         * @param eldest итератор
+         * @return is remove eldest entry
+         */
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, String> eldest) {
+            return size() > getMaxEntries();
+        }
+
+        /**
+         * @return the maxEntries
+         */
+        public int getMaxEntries() {
+            return maxEntries;
+        }
+    }
 }
