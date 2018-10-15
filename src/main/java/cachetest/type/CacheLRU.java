@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class CacheLRU extends Cache implements Serializable {
 
-    private AlgoritmLRU lru;
+    private CollectionForCacheLRU cachelru;
 
     /**
      * Constructor of class CacheLRU
@@ -24,7 +24,7 @@ public class CacheLRU extends Cache implements Serializable {
      */
     public CacheLRU(int maxEntries, boolean isFileStore) {
         this.size = maxEntries;
-        this.lru = new AlgoritmLRU(size);
+        this.cachelru = new CollectionForCacheLRU(size);
         this.isFileStore = isFileStore;
     }
 
@@ -38,14 +38,16 @@ public class CacheLRU extends Cache implements Serializable {
     public void addData(int key, String data) {
 
         if (this.isFileStore) {
-            if (this.lru.isEmpty()) {
-                this.lru = (AlgoritmLRU) Cache.loadFromFile("cacheLru.data");
+            if (this.cachelru.isEmpty()) {
+                this.cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
             }
-            if (this.lru==null) this.lru = new AlgoritmLRU(size);
-            lru.put(key, data);
-            Cache.saveToFile(lru, "cacheLru.data");
+            if (this.cachelru == null) {
+                this.cachelru = new CollectionForCacheLRU(size);
+            }
+            cachelru.put(key, data);
+            saveToFile(cachelru, "cacheLru.data");
         } else {
-            lru.put(key, data);
+            cachelru.put(key, data);
         }
     }
 
@@ -57,7 +59,12 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public String getData(int key) {
-        return lru.get(key);
+
+        String temp = cachelru.get(key);
+        if (this.isFileStore) {
+            saveToFile(cachelru, "cacheLru.data");
+        }
+        return temp;
     }
 
     /**
@@ -65,7 +72,7 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public void resetStoreCache() {
-        lru.clear();
+        cachelru.clear();
     }
 
     /**
@@ -75,13 +82,13 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public LinkedHashMap<Integer, String> showCache() {
-        return lru;
+        return cachelru;
     }
 
     /**
      * Internal Class for
      */
-    private class AlgoritmLRU extends LinkedHashMap<Integer, String> {
+    private class CollectionForCacheLRU extends LinkedHashMap<Integer, String> {
 
         private int maxEntries;
 
@@ -94,7 +101,7 @@ public class CacheLRU extends Cache implements Serializable {
          *
          * @param maxEntries Размер кэша
          */
-        public AlgoritmLRU(int maxEntries) {
+        public CollectionForCacheLRU(int maxEntries) {
             super(maxEntries * 2, 0.75f, true);//как конструктор родителя 
             this.maxEntries = maxEntries;
         }

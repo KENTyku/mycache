@@ -16,7 +16,7 @@ import java.util.HashMap;
  *
  * @author kentyku
  */
-abstract public class Cache {
+public abstract class Cache {
 
     protected String type;//type of cache
     protected int key;
@@ -24,51 +24,45 @@ abstract public class Cache {
     protected int size;//size of cache
     protected boolean isFileStore;//type Store
 
-    abstract public void addData(int key, String data);
+    public abstract void addData(int key, String data);
 
-    abstract public String getData(int key);
+    public abstract String getData(int key);
 
-    abstract public void resetStoreCache();
+    public abstract void resetStoreCache();
 
-    abstract public HashMap<Integer, String> showCache();
-    
-    static protected Object loadFromFile(String fileName) {
+    public abstract HashMap<Integer, String> showCache();
+
+    /**
+     * Load object from file
+     *
+     * @param fileName
+     * @return
+     */
+    protected Object loadFromFile(String fileName) {
         Object obj = null;
-        FileInputStream fileForRead = null;
-        ObjectInputStream inStreamObject = null;
-        try {
-            fileForRead = new FileInputStream(fileName);
-            inStreamObject = new ObjectInputStream(fileForRead);
-            obj = inStreamObject.readObject();
+        try (FileInputStream fileForRead = new FileInputStream(fileName);
+                ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
+            obj = objIS.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Ошибка загрузки кэша из файла cacheLru.data");
-        } finally {
-            try {
-                inStreamObject.close();
-                fileForRead.close();
-            } catch (IOException | NullPointerException ex) {
-                System.out.println("Ошибка закрытия потока");
-            }
+            System.out.println("Ошибка загрузки кэша из файла cacheLru.data. "
+                    + "Данный файл будет заново создан.");
         }
         return obj;
     }
 
-    static protected void saveToFile(Object obj, String fileName) {
-        FileOutputStream fileForWrite = null;
-        ObjectOutputStream outStreamObject = null;
-        try {
-            fileForWrite = new FileOutputStream(fileName);
-            outStreamObject = new ObjectOutputStream(fileForWrite);
-            outStreamObject.writeObject(obj);
+    /**
+     * Save obj to file
+     * 
+     * @param obj
+     * @param fileName
+     */
+    protected void saveToFile(Object obj, String fileName) {
+        try (FileOutputStream fileForWrite = new FileOutputStream(fileName);
+                ObjectOutputStream objOS = new ObjectOutputStream(fileForWrite);) {
+            objOS.writeObject(obj);
         } catch (IOException e) {
-            System.out.println("Ошибка выгрузки кэша в файл cacheLru.data");
-        } finally {
-            try {
-                outStreamObject.close();
-                fileForWrite.close();
-            } catch (IOException | NullPointerException ex) {
-                System.out.println("Ошибка закрытия потока");
-            }
+            System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
+                    + "Данный файл будет заново создан.");
         }
     }
 

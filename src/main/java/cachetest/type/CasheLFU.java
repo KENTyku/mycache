@@ -39,17 +39,26 @@ public class CasheLFU extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-
         if (this.isFileStore) {
-            lfu = new AlgoritmLFU(this.size);
-            if (lfu.getCache().isEmpty()) {
-                lfu = (AlgoritmLFU) Cache.loadFromFile("cacheLfu.data");
+//            lfu = new AlgoritmLFU(this.size);
+//            if (lfu.getCache().isEmpty()) {
+            lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+//            }
+            if (lfu == null) {
+                lfu = new AlgoritmLFU(this.size);
             }
-            if (lfu==null) lfu = new AlgoritmLFU(this.size);
-            lfu.addCacheEntry(key, data);
-            Cache.saveToFile(lfu, "cacheLfu.data");
+            if (!lfu.findKey(key)) {
+                lfu.addCacheEntry(key, data);
+                saveToFile(lfu, "cacheLfu.data");
+            } else {
+//                System.out.println(key + " уже присутствует.");
+            }
         } else {
-            lfu.addCacheEntry(key, data);
+            if (!lfu.findKey(key)) {
+                lfu.addCacheEntry(key, data);
+            } else {
+//                System.out.println(key + " уже присутствует.");
+            }
         }
     }
 
@@ -61,7 +70,11 @@ public class CasheLFU extends Cache implements Serializable {
      */
     @Override
     public String getData(int key) {
-        return lfu.getCacheEntry(key);
+        String temp = lfu.getCacheEntry(key);
+        if (this.isFileStore) {
+            saveToFile(lfu, "cacheLfu.data");
+        }
+        return temp;
     }
 
     /**
@@ -79,7 +92,9 @@ public class CasheLFU extends Cache implements Serializable {
      */
     @Override
     public HashMap<Integer, String> showCache() {
-
+        if (this.isFileStore) {
+            lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+        }
         return lfu.getCache();
     }
 
@@ -100,6 +115,10 @@ public class CasheLFU extends Cache implements Serializable {
          */
         public AlgoritmLFU(int maxEntries) {
             this.maxEntries = maxEntries;
+        }
+
+        public boolean findKey(int key) {
+            return cache.containsKey(key);
         }
 
         /**
@@ -191,6 +210,9 @@ public class CasheLFU extends Cache implements Serializable {
             cache.clear();
         }
 
+        /**
+         * Class for entry of CacheLFU
+         */
         private class CacheEntryLFU implements Serializable {
 
             private String data;
