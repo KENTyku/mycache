@@ -147,6 +147,19 @@ public class CasheLFU extends Cache implements Serializable {
         }
 
         /**
+         * Check whether the cache is full or not
+         *
+         * @return
+         */
+        private boolean isFull() {
+            if (cache.size() == maxEntries) {
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
          * Returns the index of the least frequently used value
          *
          * @return
@@ -180,19 +193,6 @@ public class CasheLFU extends Cache implements Serializable {
                 return temp.getData();
             }
             return null; // cache miss
-        }
-
-        /**
-         * Check whether the cache is full or not
-         *
-         * @return
-         */
-        private boolean isFull() {
-            if (cache.size() == maxEntries) {
-                return true;
-            }
-
-            return false;
         }
 
         /**

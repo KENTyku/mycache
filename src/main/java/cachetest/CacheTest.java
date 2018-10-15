@@ -46,8 +46,8 @@ public class CacheTest {
         cacheLFU.addData(5, "Вашингтон");
         cacheLFU.getData(1);
         cacheLFU.getData(2);
-//        System.out.println(cacheLFU.getData(1));
-//        System.out.println(cacheLFU.getData(2));
+        System.out.println(cacheLFU.getData(1));
+        System.out.println(cacheLFU.getData(2));
         cacheLFU.addData(6, "Токио");
         cacheLFU.addData(7, "Париж");
         cacheLFU.showData();
