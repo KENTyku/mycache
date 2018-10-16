@@ -22,7 +22,7 @@ public class CacheTest {
      */
     public static void main(String[] args) throws Exception {//assert-ы
         System.out.println("Тест LRU");
-        CacheBuilder cacheLRU = new CacheBuilder(LRU, 5, HDD);
+        ClientCache cacheLRU = new ClientCache(LRU, 5, HDD);
         cacheLRU.addData(1, "Ижевск");
         cacheLRU.addData(2, "Лондон");
         cacheLRU.addData(3, "Венеция");
@@ -42,7 +42,7 @@ public class CacheTest {
 
         System.out.println();
         System.out.println("Тест LFU");
-        CacheBuilder cacheLFU = new CacheBuilder(LFU, 5, HDD);
+        ClientCache cacheLFU = new ClientCache(LFU, 5, HDD);
 //        cacheLFU.showData();
         cacheLFU.addData(1, "Ижевск");
         cacheLFU.addData(2, "Лондон");

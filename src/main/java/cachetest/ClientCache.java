@@ -4,9 +4,8 @@
  */
 package cachetest;
 
-import cachetest.type.CasheLFU;
+import cachetest.type.CacheLFU;
 import cachetest.type.CacheLRU;
-import cachetest.type.Cache;
 import java.util.Map;
 
 /**
@@ -14,9 +13,9 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheBuilder {
+public class ClientCache {
 
-    private Cache cache;
+    private cachetest.type.Cache cache;
     private final int size;
 
     /**
@@ -26,7 +25,7 @@ public class CacheBuilder {
      * @param sizeCache
      * @param typeStore Type
      */
-    CacheBuilder(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
+    ClientCache(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
         switch (typeCache) {
 
@@ -34,9 +33,26 @@ public class CacheBuilder {
                 this.cache = new CacheLRU(size, typeStore);
                 break;
             case LFU:
-                this.cache = new CasheLFU(size, typeStore);
+                this.cache = new CacheLFU(size, typeStore);
                 break;
         }
+
+        DirectorCache dir = new DirectorCache();
+        LRUBuilder builderLRU = new LRUBuilder();
+
+        dir.constructCacheHDD(builderLRU);
+        CacheLRU cacheHDDLRU = builderLRU.getCacheLRU();
+
+        dir.constructCacheRAM(builderLRU);
+        CacheLRU cacheRAMLRU = builderLRU.getCacheLRU();
+
+        LFUBuilder builderLFU = new LFUBuilder();
+
+        dir.constructCacheHDD(builderLFU);
+        CacheLFU cacheHDDLFU = builderLFU.getCacheLFU();
+
+        dir.constructCacheRAM(builderLFU);
+        CacheLFU cacheRAMLFU = builderLFU.getCacheLFU();
     }
 
     /**

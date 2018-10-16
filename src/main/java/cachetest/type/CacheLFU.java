@@ -16,7 +16,13 @@ import java.util.Map.Entry;
  *
  * @author kentyku
  */
-public class CasheLFU extends Cache implements Serializable {
+public class CacheLFU  implements Cache,Serializable {
+
+    private String type;
+    private int key;
+    private String data;
+    private int size;
+    private TypeStore typeStore;
 
     private AlgoritmLFU lfu;
 
@@ -26,7 +32,7 @@ public class CasheLFU extends Cache implements Serializable {
      * @param maxEntries Cashe size
      * @param typeStore
      */
-    public CasheLFU(int maxEntries, TypeStore typeStore) {
+    public CacheLFU(int maxEntries, TypeStore typeStore) {
         this.size = maxEntries;
         this.typeStore = typeStore;
         this.lfu = new AlgoritmLFU(maxEntries);
@@ -44,12 +50,12 @@ public class CasheLFU extends Cache implements Serializable {
     public void addData(int key, String data) {
         switch (this.typeStore) {
             case HDD: {
-                try{
-                     lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
-                }catch(NullPointerException e){
+                try {
+                    lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+                } catch (NullPointerException e) {
                     lfu = new AlgoritmLFU(this.size);
-                }             
-                              
+                }
+
                 if (!lfu.findKey(key)) {
                     lfu.addCacheEntry(key, data);
                     saveToFile(lfu, "cacheLfu.data");

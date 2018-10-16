@@ -14,7 +14,13 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheLRU extends Cache implements Serializable {
+public class CacheLRU  implements Cache,Serializable {
+
+    private String type;
+    private int key;
+    private String data;
+    private int size;
+    private TypeStore typeStore;
 
     private CollectionForCacheLRU cachelru;
 
