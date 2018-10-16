@@ -14,10 +14,11 @@ public class CacheTest {
      * Use for test.
      *
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
         System.out.println("Тест LRU");
-        CacheBuilder cacheLRU = new CacheBuilder("LRU1", 10, true);
+        CacheBuilder cacheLRU = new CacheBuilder("LRU1", 5, true);
         cacheLRU.addData(1, "Ижевск");
         cacheLRU.addData(2, "Лондон");
         cacheLRU.addData(3, "Венеция");
