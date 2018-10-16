@@ -10,13 +10,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class describing the creation of an LFU cache
  *
  * @author kentyku
  */
-public class CacheLFU  implements Cache,Serializable {
+public class CacheLFU implements Cache, Serializable {
 
     private String type;
     private int key;
@@ -185,36 +186,37 @@ public class CacheLFU  implements Cache,Serializable {
          *
          * @return
          */
-        private int getLFUKey() {//стрим апи использовать
+        private int getLFUKey() {//стрим апи использовать      
+            Comparator<Entry<Integer, CacheEntryLFU>> comparator = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue().getFrequency());
             int key = 0;
             key = cache
                     .entrySet()
                     .stream()
-                    .min(new ComparatorForGetLFUKey())
+                    //                    .min(new ComparatorForGetLFUKey())
+                    .min(comparator)
                     .get()
                     .getKey();
             System.out.println("реже всего использовался элемент - " + key);
             return key;
         }
 
-        private class ComparatorForGetLFUKey implements Comparator<Entry<Integer, CacheEntryLFU>> {
-
-            @Override
-            public int compare(Entry<Integer, CacheEntryLFU> o1, Entry<Integer, CacheEntryLFU> o2) {
-                int result = 0;
-                if ((o1.getValue().getFrequency()) == (o2.getValue().getFrequency())) {
-                    result = 0;
-                }
-                if ((o1.getValue().getFrequency()) < (o2.getValue().getFrequency())) {
-                    result = 1;
-                }
-                if ((o1.getValue().getFrequency()) > (o2.getValue().getFrequency())) {
-                    result = 1;
-                }
-                return result;
-            }
-        }
-
+//        private class ComparatorForGetLFUKey implements Comparator<Entry<Integer, CacheEntryLFU>> {
+//
+//            @Override
+//            public int compare(Entry<Integer, CacheEntryLFU> o1, Entry<Integer, CacheEntryLFU> o2) {
+//                int result = 0;
+//                if ((o1.getValue().getFrequency()) == (o2.getValue().getFrequency())) {
+//                    result = 0;
+//                }
+//                if ((o1.getValue().getFrequency()) < (o2.getValue().getFrequency())) {
+//                    result = 1;
+//                }
+//                if ((o1.getValue().getFrequency()) > (o2.getValue().getFrequency())) {
+//                    result = 1;
+//                }
+//                return result;
+//            }
+//        }
         /**
          * Returns data from cache
          *
