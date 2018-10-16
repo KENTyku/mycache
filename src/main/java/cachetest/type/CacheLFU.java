@@ -4,16 +4,26 @@
  */
 package cachetest.type;
 
+import cachetest.TypeStore;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Class describing the creation of an LFU cache
  *
  * @author kentyku
  */
-public class CasheLFU extends Cache implements Serializable {
+public class CacheLFU implements Cache, Serializable {
+
+    private String type;
+    private int key;
+    private String data;
+    private int size;
+    private TypeStore typeStore;
 
     private AlgoritmLFU lfu;
 
@@ -21,11 +31,11 @@ public class CasheLFU extends Cache implements Serializable {
      * Constructor of class CacheLRU
      *
      * @param maxEntries Cashe size
+     * @param typeStore
      */
-    public CasheLFU(int maxEntries, boolean isFileStore) {
-        this.isFileStore = false;
+    public CacheLFU(int maxEntries, TypeStore typeStore) {
         this.size = maxEntries;
-        this.isFileStore = isFileStore;
+        this.typeStore = typeStore;
         this.lfu = new AlgoritmLFU(maxEntries);
 
     }
@@ -39,27 +49,30 @@ public class CasheLFU extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-        if (this.isFileStore) {
-//            lfu = new AlgoritmLFU(this.size);
-//            if (lfu.getCache().isEmpty()) {
-            lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
-//            }
-            if (lfu == null) {
-                lfu = new AlgoritmLFU(this.size);
+        switch (this.typeStore) {
+            case HDD: {
+                try {
+                    lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+                } catch (NullPointerException e) {
+                    lfu = new AlgoritmLFU(this.size);
+                }
+
+                if (!lfu.findKey(key)) {
+                    lfu.addCacheEntry(key, data);
+                    saveToFile(lfu, "cacheLfu.data");
+                }
             }
-            if (!lfu.findKey(key)) {
-                lfu.addCacheEntry(key, data);
-                saveToFile(lfu, "cacheLfu.data");
-            } else {
-//                System.out.println(key + " уже присутствует.");
+            break;
+            case RAM: {
+                if (!lfu.findKey(key)) {
+                    lfu.addCacheEntry(key, data);
+                }
             }
-        } else {
-            if (!lfu.findKey(key)) {
-                lfu.addCacheEntry(key, data);
-            } else {
-//                System.out.println(key + " уже присутствует.");
-            }
+            break;
+            default:
+                throw new AssertionError(this.typeStore.name());
         }
+
     }
 
     /**
@@ -71,8 +84,15 @@ public class CasheLFU extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String temp = lfu.getCacheEntry(key);
-        if (this.isFileStore) {
-            saveToFile(lfu, "cacheLfu.data");
+        switch (this.typeStore) {
+            case HDD:
+                saveToFile(lfu, "cacheLfu.data");
+                break;
+            case RAM:
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
+
         }
         return temp;
     }
@@ -91,9 +111,15 @@ public class CasheLFU extends Cache implements Serializable {
      * @return values in the cache
      */
     @Override
-    public HashMap<Integer, String> showCache() {
-        if (this.isFileStore) {
-            lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+    public HashMap<Integer, String> getCache() {
+        switch (this.typeStore) {
+            case HDD:
+                lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+                break;
+            case RAM:
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
         }
         return lfu.getCache();
     }
@@ -152,11 +178,7 @@ public class CasheLFU extends Cache implements Serializable {
          * @return
          */
         private boolean isFull() {
-            if (cache.size() == maxEntries) {
-                return true;
-            }
-
-            return false;
+            return cache.size() == maxEntries;
         }
 
         /**
@@ -164,20 +186,37 @@ public class CasheLFU extends Cache implements Serializable {
          *
          * @return
          */
-        private int getLFUKey() {
+        private int getLFUKey() {//стрим апи использовать      
+            Comparator<Entry<Integer, CacheEntryLFU>> comparator = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue().getFrequency());
             int key = 0;
-            int minFreq = Integer.MAX_VALUE;
-
-            for (Map.Entry<Integer, CacheEntryLFU> entry : cache.entrySet()) {
-                if (minFreq > entry.getValue().getFrequency()) {
-                    key = entry.getKey();
-                    minFreq = entry.getValue().getFrequency();
-                }
-            }
-
+            key = cache
+                    .entrySet()
+                    .stream()
+                    //                    .min(new ComparatorForGetLFUKey())
+                    .min(comparator)
+                    .get()
+                    .getKey();
+            System.out.println("реже всего использовался элемент - " + key);
             return key;
         }
 
+//        private class ComparatorForGetLFUKey implements Comparator<Entry<Integer, CacheEntryLFU>> {
+//
+//            @Override
+//            public int compare(Entry<Integer, CacheEntryLFU> o1, Entry<Integer, CacheEntryLFU> o2) {
+//                int result = 0;
+//                if ((o1.getValue().getFrequency()) == (o2.getValue().getFrequency())) {
+//                    result = 0;
+//                }
+//                if ((o1.getValue().getFrequency()) < (o2.getValue().getFrequency())) {
+//                    result = 1;
+//                }
+//                if ((o1.getValue().getFrequency()) > (o2.getValue().getFrequency())) {
+//                    result = 1;
+//                }
+//                return result;
+//            }
+//        }
         /**
          * Returns data from cache
          *
@@ -185,14 +224,13 @@ public class CasheLFU extends Cache implements Serializable {
          * @return entry for cache with frequency marker
          */
         public String getCacheEntry(int key) {
-            if (cache.containsKey(key)) // cache hit
-            {
+            if (cache.containsKey(key)) {
                 CacheEntryLFU temp = cache.get(key);
                 temp.setFrequency(temp.getFrequency() + 1);
                 cache.put(key, temp);
                 return temp.getData();
             }
-            return null; // cache miss
+            return null;
         }
 
         /**

@@ -4,6 +4,7 @@
  */
 package cachetest.type;
 
+import cachetest.TypeStore;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,7 +14,13 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheLRU extends Cache implements Serializable {
+public class CacheLRU  implements Cache,Serializable {
+
+    private String type;
+    private int key;
+    private String data;
+    private int size;
+    private TypeStore typeStore;
 
     private CollectionForCacheLRU cachelru;
 
@@ -22,10 +29,10 @@ public class CacheLRU extends Cache implements Serializable {
      *
      * @param maxEntries cache size
      */
-    public CacheLRU(int maxEntries, boolean isFileStore) {
+    public CacheLRU(int maxEntries, TypeStore typeStore) {
         this.size = maxEntries;
         this.cachelru = new CollectionForCacheLRU(size);
-        this.isFileStore = isFileStore;
+        this.typeStore = typeStore;
     }
 
     /**
@@ -36,18 +43,26 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
+        switch (this.typeStore) {
+            case HDD: {
+                if (cachelru.isEmpty()) {
+                    try {
+                        cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
+                    } catch (NullPointerException e) {
+                        cachelru = new CollectionForCacheLRU(size);
+                    }
+                }
 
-        if (this.isFileStore) {
-            if (this.cachelru.isEmpty()) {
-                this.cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
+                cachelru.put(key, data);
+                saveToFile(cachelru, "cacheLru.data");
             }
-            if (this.cachelru == null) {
-                this.cachelru = new CollectionForCacheLRU(size);
-            }
-            cachelru.put(key, data);
-            saveToFile(cachelru, "cacheLru.data");
-        } else {
-            cachelru.put(key, data);
+            break;
+            case RAM:
+                cachelru.put(key, data);
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
+
         }
     }
 
@@ -59,12 +74,19 @@ public class CacheLRU extends Cache implements Serializable {
      */
     @Override
     public String getData(int key) {
+        String data = cachelru.get(key);
 
-        String temp = cachelru.get(key);
-        if (this.isFileStore) {
-            saveToFile(cachelru, "cacheLru.data");
+        switch (this.typeStore) {
+            case HDD:
+                saveToFile(cachelru, "cacheLru.data");
+                break;
+            case RAM:
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
+
         }
-        return temp;
+        return data;
     }
 
     /**
@@ -81,7 +103,7 @@ public class CacheLRU extends Cache implements Serializable {
      * @return Map of etems cache
      */
     @Override
-    public LinkedHashMap<Integer, String> showCache() {
+    public LinkedHashMap<Integer, String> getCache() {
         return cachelru;
     }
 
