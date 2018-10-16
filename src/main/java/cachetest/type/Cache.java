@@ -4,6 +4,7 @@
  */
 package cachetest.type;
 
+import cachetest.TypeStore;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,11 +19,11 @@ import java.util.HashMap;
  */
 public abstract class Cache {
 
-    protected String type;//type of cache
+    protected String type;
     protected int key;
     protected String data;
-    protected int size;//size of cache
-    protected boolean isFileStore;//type Store
+    protected int size;
+    protected TypeStore typeStore;
 
     public abstract void addData(int key, String data);
 
@@ -30,7 +31,7 @@ public abstract class Cache {
 
     public abstract void resetStoreCache();
 
-    public abstract HashMap<Integer, String> showCache();
+    public abstract HashMap<Integer, String> getCache();
 
     /**
      * Load object from file
@@ -38,21 +39,22 @@ public abstract class Cache {
      * @param fileName
      * @return
      */
-    protected Object loadFromFile(String fileName) {
+    protected Object loadFromFile(String fileName) throws NullPointerException {
         Object obj = null;
         try (FileInputStream fileForRead = new FileInputStream(fileName);
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
             obj = objIS.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ошибка загрузки кэша из файла cacheLru.data. "
-                    + "Данный файл будет заново создан.");
+                    + "Кеш будет создан заново .");
+            throw new NullPointerException();
         }
         return obj;
     }
 
     /**
      * Save obj to file
-     * 
+     *
      * @param obj
      * @param fileName
      */
@@ -62,7 +64,7 @@ public abstract class Cache {
             objOS.writeObject(obj);
         } catch (IOException e) {
             System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
-                    + "Данный файл будет заново создан.");
+                    + "Убедитесь что HDD доступен для записи.");
         }
     }
 

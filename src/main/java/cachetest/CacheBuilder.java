@@ -24,26 +24,18 @@ public class CacheBuilder {
      *
      * @param typeCache
      * @param sizeCache
-     * @param isFileStore Type
+     * @param typeStore Type
      */
-    CacheBuilder(String typeCache, int sizeCache, boolean isFileStore) {
+    CacheBuilder(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
         switch (typeCache) {
 
-            case "LRU":
-                this.cache = new CacheLRU(size, isFileStore);
+            case LRU:
+                this.cache = new CacheLRU(size, typeStore);
                 break;
-            case "LFU":
-                this.cache = new CasheLFU(size, isFileStore);
+            case LFU:
+                this.cache = new CasheLFU(size, typeStore);
                 break;
-            default:
-                try {
-                    throw new Exception(typeCache);
-                } catch (Exception e) {
-                    System.out.println("Данный тип кеша " + e.getMessage() + " не поддерживается. "
-                            + "Будет выбран тип LRU");
-                    this.cache = new CacheLRU(size, isFileStore);
-                }
         }
     }
 
@@ -79,7 +71,7 @@ public class CacheBuilder {
      */
     void showData() {
 
-        for (Map.Entry<Integer, String> entry : cache.showCache().entrySet()) {
+        for (Map.Entry<Integer, String> entry : cache.getCache().entrySet()) {
             System.out.println(entry.getKey() + " = " + entry.getValue());
         }
 

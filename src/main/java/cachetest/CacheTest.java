@@ -4,6 +4,11 @@
  */
 package cachetest;
 
+import static cachetest.TypeCache.*;
+import static cachetest.TypeStore.*;
+
+
+
 /**
  *
  * @author kentyku
@@ -15,15 +20,15 @@ public class CacheTest {
      *
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {//assert-ы
         System.out.println("Тест LRU");
-        CacheBuilder cacheLRU = new CacheBuilder("LRU1", 10, true);
+        CacheBuilder cacheLRU = new CacheBuilder(LRU, 5, HDD);
         cacheLRU.addData(1, "Ижевск");
         cacheLRU.addData(2, "Лондон");
         cacheLRU.addData(3, "Венеция");
         cacheLRU.addData(4, "Берлин");
         cacheLRU.addData(5, "Вашингтон");
-        cacheLRU.getData(3);
+        cacheLRU.getData(1);
         cacheLRU.addData(6, "Токио");
         cacheLRU.addData(7, "Париж");
         cacheLRU.getData(4);
@@ -37,7 +42,7 @@ public class CacheTest {
 
         System.out.println();
         System.out.println("Тест LFU");
-        CacheBuilder cacheLFU = new CacheBuilder("LFU", 5, true);
+        CacheBuilder cacheLFU = new CacheBuilder(LFU, 5, HDD);
 //        cacheLFU.showData();
         cacheLFU.addData(1, "Ижевск");
         cacheLFU.addData(2, "Лондон");
