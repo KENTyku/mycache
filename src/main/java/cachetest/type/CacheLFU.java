@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Class describing the creation of an LFU cache
@@ -19,11 +18,8 @@ import java.util.Set;
  */
 public class CacheLFU implements Cache, Serializable {
 
-    private String type;
-    private int key;
-    private String data;
-    private int size;
-    private TypeStore typeStore;
+    private final int size;
+    private final TypeStore typeStore;
 
     private AlgoritmLFU lfu;
 
@@ -42,7 +38,6 @@ public class CacheLFU implements Cache, Serializable {
 
     /**
      * Adding data to the cache and restore or save cashe into DataStore
-     *
      *
      * @param key unique key
      * @param data value
@@ -131,8 +126,8 @@ public class CacheLFU implements Cache, Serializable {
      */
     private class AlgoritmLFU implements Serializable {
 
-        private int maxEntries;
-        private HashMap<Integer, CacheEntryLFU> cache = new HashMap<Integer, CacheEntryLFU>();
+        private final int maxEntries;
+        private final HashMap<Integer, CacheEntryLFU> cache;
 
         /**
          * Constructor
@@ -140,6 +135,7 @@ public class CacheLFU implements Cache, Serializable {
          * @param maxEntries It is size cache.
          */
         public AlgoritmLFU(int maxEntries) {
+            this.cache = new HashMap<>();
             this.maxEntries = maxEntries;
         }
 
@@ -186,37 +182,19 @@ public class CacheLFU implements Cache, Serializable {
          *
          * @return
          */
-        private int getLFUKey() {//стрим апи использовать      
+        private int getLFUKey() {
             Comparator<Entry<Integer, CacheEntryLFU>> comparator = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue().getFrequency());
-            int key = 0;
+            int key;
             key = cache
                     .entrySet()
                     .stream()
-                    //                    .min(new ComparatorForGetLFUKey())
                     .min(comparator)
                     .get()
                     .getKey();
-            System.out.println("реже всего использовался элемент - " + key);
+//            System.out.println("реже всего использовался элемент - " + key);
             return key;
         }
 
-//        private class ComparatorForGetLFUKey implements Comparator<Entry<Integer, CacheEntryLFU>> {
-//
-//            @Override
-//            public int compare(Entry<Integer, CacheEntryLFU> o1, Entry<Integer, CacheEntryLFU> o2) {
-//                int result = 0;
-//                if ((o1.getValue().getFrequency()) == (o2.getValue().getFrequency())) {
-//                    result = 0;
-//                }
-//                if ((o1.getValue().getFrequency()) < (o2.getValue().getFrequency())) {
-//                    result = 1;
-//                }
-//                if ((o1.getValue().getFrequency()) > (o2.getValue().getFrequency())) {
-//                    result = 1;
-//                }
-//                return result;
-//            }
-//        }
         /**
          * Returns data from cache
          *

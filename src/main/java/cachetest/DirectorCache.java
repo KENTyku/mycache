@@ -11,8 +11,8 @@ package cachetest;
  */
 public class DirectorCache {
     
-   void constructCacheHDD(Builder builder){
-       builder.createCache(5, TypeStore.HDD);
+   void constructCacheHDD(Builder builder, int size,TypeStore typeStore){
+       builder.createCache(size, typeStore);
        
    }
    void constructCacheRAM(Builder builder){

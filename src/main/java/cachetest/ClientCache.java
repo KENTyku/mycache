@@ -27,20 +27,20 @@ public class ClientCache {
      */
     ClientCache(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
-        switch (typeCache) {
-
-            case LRU:
-                this.cache = new CacheLRU(size, typeStore);
-                break;
-            case LFU:
-                this.cache = new CacheLFU(size, typeStore);
-                break;
-        }
+//        switch (typeCache) {
+//
+//            case LRU:
+//                this.cache = new CacheLRU(size, typeStore);
+//                break;
+//            case LFU:
+//                this.cache = new CacheLFU(size, typeStore);
+//                break;
+//        }
 
         DirectorCache dir = new DirectorCache();
         LRUBuilder builderLRU = new LRUBuilder();
 
-        dir.constructCacheHDD(builderLRU);
+        dir.constructCacheHDD(builderLRU,size,typeStore);
         CacheLRU cacheHDDLRU = builderLRU.getCacheLRU();
 
         dir.constructCacheRAM(builderLRU);
@@ -48,7 +48,7 @@ public class ClientCache {
 
         LFUBuilder builderLFU = new LFUBuilder();
 
-        dir.constructCacheHDD(builderLFU);
+        dir.constructCacheHDD(builderLFU,size,typeStore);
         CacheLFU cacheHDDLFU = builderLFU.getCacheLFU();
 
         dir.constructCacheRAM(builderLFU);
