@@ -27,32 +27,34 @@ public class ClientCache {
      */
     ClientCache(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
-//        switch (typeCache) {
-//
-//            case LRU:
-//                this.cache = new CacheLRU(size, typeStore);
-//                break;
-//            case LFU:
-//                this.cache = new CacheLFU(size, typeStore);
-//                break;
-//        }
+        switch (typeCache) {
 
-        DirectorCache dir = new DirectorCache();
-        LRUBuilder builderLRU = new LRUBuilder();
+            case LRU:
+                this.cache = new CacheLRU(size, typeStore);
+                break;
+            case LFU:
+                this.cache = new CacheLFU(size, typeStore);
+                break;
+        }
+        
 
-        dir.constructCacheHDD(builderLRU,size,typeStore);
-        CacheLRU cacheHDDLRU = builderLRU.getCacheLRU();
+        DirectorCache director = new DirectorCache();//TODO:
+        LRUBuilder builderLRU = new LRUBuilder();//конкретный построитель
 
-        dir.constructCacheRAM(builderLRU);
-        CacheLRU cacheRAMLRU = builderLRU.getCacheLRU();
+        director.constructCacheHDD(builderLRU,size,typeStore);//вызываем общий метод 
+        //создания объектов с конкретными параметрами
+        CacheLRU cacheHDDLRU = builderLRU.getCacheLRU();//получаем сформированный объект нужного типа
+
+//        director.constructCacheRAM(builderLRU);
+//        CacheLRU cacheRAMLRU = builderLRU.getCacheLRU();
 
         LFUBuilder builderLFU = new LFUBuilder();
 
-        dir.constructCacheHDD(builderLFU,size,typeStore);
+        director.constructCacheHDD(builderLFU,size,typeStore);
         CacheLFU cacheHDDLFU = builderLFU.getCacheLFU();
 
-        dir.constructCacheRAM(builderLFU);
-        CacheLFU cacheRAMLFU = builderLFU.getCacheLFU();
+//        director.constructCacheRAM(builderLFU);
+//        CacheLFU cacheRAMLFU = builderLFU.getCacheLFU();
     }
 
     /**

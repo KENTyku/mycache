@@ -5,6 +5,7 @@
 package cachetest.type;
 
 import cachetest.TypeStore;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,6 +60,13 @@ public interface Cache {
         } catch (IOException e) {
             System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
                     + "Убедитесь что HDD доступен для записи.");
+        }
+    }
+
+    default void resetCacheHDD(String fileName) {
+        File file = new File(fileName);
+        if (!file.delete()) {
+            System.out.println("Файл "+fileName+" не был найден в корневой папке проекта");
         }
     }
 

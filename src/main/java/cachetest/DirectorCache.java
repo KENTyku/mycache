@@ -18,14 +18,6 @@ public class DirectorCache {
    void constructCacheRAM(Builder builder){
        builder.createCache(5, TypeStore.RAM);
      
-  }
-  
-//    Director()
-//        
-//            void buildCache
-//        Builder 
-//        builder.createCache(5, TypeStore.HDD);
-//        builder.
-//    }
-    
+  }  
+
 }

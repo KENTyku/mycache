@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheLRU  implements Cache,Serializable {
+public class CacheLRU implements Cache, Serializable {
 
     private String type;
     private int key;
@@ -94,7 +94,19 @@ public class CacheLRU  implements Cache,Serializable {
      */
     @Override
     public void resetStoreCache() {
-        cachelru.clear();
+        switch (this.typeStore) {
+            case HDD:
+                resetCacheHDD("cacheLru.data");
+                cachelru.clear();
+                break;
+            case RAM:
+                cachelru.clear();
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
+
+        }
+
     }
 
     /**

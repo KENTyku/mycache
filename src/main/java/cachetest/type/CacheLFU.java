@@ -97,7 +97,19 @@ public class CacheLFU implements Cache, Serializable {
      */
     @Override
     public void resetStoreCache() {
-        lfu.resetCache();
+         switch (this.typeStore) {
+            case HDD:
+                resetCacheHDD("cacheLfu.data");
+                lfu.resetCache();
+                break;
+            case RAM:
+                lfu.resetCache();
+                break;
+            default:
+                throw new AssertionError(this.typeStore.name());
+
+        }
+        
     }
 
     /**
