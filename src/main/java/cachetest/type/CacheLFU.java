@@ -195,7 +195,10 @@ public class CacheLFU implements Cache, Serializable {
          * @return
          */
         private int getLFUKey() {
-            Comparator<Entry<Integer, CacheEntryLFU>> comparator = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue().getFrequency());
+            Comparator<Entry<Integer, CacheEntryLFU>> comparator 
+                    = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) 
+                            -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue()
+                                    .getFrequency());
             int key;
             key = cache
                     .entrySet()

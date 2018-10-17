@@ -34,13 +34,13 @@ public class CacheTest {
         cacheLRU.getData(2);
         cacheLRU.addData(6, "Токио");
         cacheLRU.addData(7, "Париж");
-        cacheLRU.showData();
+        cacheLRU.printAllCashe();
 
         System.out.println("Очистка кеша");
         cacheLRU.resetCash();
         System.out.println("Добавляем данные");
         cacheLRU.addData(8, "Киев");
-        cacheLRU.showData();
+        cacheLRU.printAllCashe();
 
         System.out.println();
         System.out.println("Тест LFU");
@@ -60,13 +60,13 @@ public class CacheTest {
         System.out.println(cacheLFU.getData(2));
         cacheLFU.addData(6, "Токио");
         cacheLFU.addData(7, "Париж");
-        cacheLFU.showData();
+        cacheLFU.printAllCashe();
 
         System.out.println("Очистка кеша");
         cacheLFU.resetCash();
         System.out.println("Добавляем данные");
         cacheLFU.addData(8, "Киев");
-        cacheLFU.showData();
+        cacheLFU.printAllCashe();
     }
 
 }
