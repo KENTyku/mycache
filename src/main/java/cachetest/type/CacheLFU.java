@@ -16,7 +16,7 @@ import java.util.Map.Entry;
  *
  * @author kentyku
  */
-public class CacheLFU implements Cache, Serializable {
+public class CacheLFU implements CacheBuilder, Serializable {
 
     private final int size;
     private final TypeStore typeStore;

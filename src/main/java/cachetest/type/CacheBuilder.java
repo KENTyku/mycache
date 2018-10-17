@@ -18,7 +18,7 @@ import java.util.HashMap;
  *
  * @author kentyku
  */
-public interface Cache {
+public interface CacheBuilder {
 
     public abstract void addData(int key, String data);
 

@@ -14,11 +14,11 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class ClientCache {
+public class CasheGenerator {
 
-    private cachetest.type.Cache cache;
+    private cachetest.type.CacheBuilder cache;
     private final int size;
-
+    
     /**
      * Сonstructor of class CacheBuilder
      *
@@ -26,7 +26,7 @@ public class ClientCache {
      * @param sizeCache
      * @param typeStore Type
      */
-    ClientCache(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
+    CasheGenerator(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
         switch (typeCache) {
 
@@ -37,23 +37,7 @@ public class ClientCache {
                 this.cache = new CacheLFU(size, typeStore);
                 break;
         }
-
-//        DirectorCache director = new DirectorCache();//TODO:
-//        LRUBuilder builderLRU = new LRUBuilder();//конкретный построитель
-//
-//        director.constructCacheHDD(builderLRU,size,typeStore);//вызываем общий метод 
-//        //создания объектов с конкретными параметрами
-//        CacheLRU cacheHDDLRU = builderLRU.getCacheLRU();//получаем сформированный объект нужного типа
-//
-////        director.constructCacheRAM(builderLRU);
-////        CacheLRU cacheRAMLRU = builderLRU.getCacheLRU();
-//
-//        LFUBuilder builderLFU = new LFUBuilder();
-//
-//        director.constructCacheHDD(builderLFU,size,typeStore);
-//        CacheLFU cacheHDDLFU = builderLFU.getCacheLFU();
-//        director.constructCacheRAM(builderLFU);
-//        CacheLFU cacheRAMLFU = builderLFU.getCacheLFU();
+       
     }
 
     /**

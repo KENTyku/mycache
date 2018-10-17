@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheLRU implements Cache, Serializable {
+public class CacheLRU implements CacheBuilder, Serializable {
 
     private String type;
     private int key;
