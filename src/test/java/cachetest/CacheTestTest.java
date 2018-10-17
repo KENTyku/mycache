@@ -25,10 +25,12 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
         CasheGenerator cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.HDD);
+        System.out.println("Удаляем кеш");
         cache.resetCash();
 
         cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.RAM);
         assertFalse((new File("cacheLru.data")).exists());
+        System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLRU(cache);
         Integer[] expecteds = cache.getAllCache()
                 .keySet()
@@ -37,8 +39,8 @@ public class CacheTestTest {
                 .toArray(Integer[]::new);
 
         Integer[] actuals = {1, 2, 5, 6, 7};
-
         assertArrayEquals(expecteds, actuals);
+        System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLru.data")).exists());
     }
 
@@ -53,6 +55,7 @@ public class CacheTestTest {
         CasheGenerator cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.HDD);
         cache.resetCash();
         assertFalse((new File("cacheLru.data")).exists());
+        System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLRU(cache);
         Integer[] expecteds = cache.getAllCache()
                 .keySet()
@@ -87,10 +90,12 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
         CasheGenerator cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.HDD);
+        System.out.println("Удаляем кеш");
         cache.resetCash();
 
         cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.RAM);
         assertFalse((new File("cacheLfu.data")).exists());
+        System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLFU(cache);
         Integer[] expecteds = cache.getAllCache()
                 .keySet()
@@ -101,6 +106,7 @@ public class CacheTestTest {
         Integer[] actuals = {3, 4, 5, 6, 7};
 
         assertArrayEquals(expecteds, actuals);
+        System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLfu.data")).exists());
     }
 
@@ -114,6 +120,7 @@ public class CacheTestTest {
         CasheGenerator cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.HDD);
         cache.resetCash();
         assertFalse((new File("cacheLfu.data")).exists());
+        System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLFU(cache);
         Integer[] expecteds = cache.getAllCache()
                 .keySet()
