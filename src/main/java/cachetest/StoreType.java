@@ -9,6 +9,6 @@ package cachetest;
  *
  * @author jury
  */
-public enum TypeStore {
+public enum StoreType {
     HDD, RAM
 }

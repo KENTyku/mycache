@@ -9,6 +9,6 @@ package cachetest;
  *
  * @author jury
  */
-public enum TypeCache {
+public enum CacheType {
     LFU, LRU
 }

@@ -6,8 +6,10 @@
 package cachetest;
 
 import cachetest.type.Cache;
+import cachetest.type.LRUCache;
 import java.io.File;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -18,7 +20,7 @@ public class CacheTestTest {
     public CacheTestTest() {
     }
 
-    @org.junit.Test
+    @Test
     public void testCacheLRURAM() {
         class LocalClassForGetNameMetod {
         }
@@ -27,14 +29,14 @@ public class CacheTestTest {
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
         System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
-        Cache cache = cb.returnCache();
+        CacheBuilder cb = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD);
+        Cache cache = cb.getCache();
         cache.resetStoreCache();
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Проверяем работу кеша");
-        cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.RAM);
-        cache = cb.returnCache();
+        cb = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM);
+        cache = cb.getCache();
         cache = fillCache(cache);
         Integer[] actuals = cache.getCache()
                 .keySet()
@@ -42,12 +44,12 @@ public class CacheTestTest {
                 .sorted()
                 .toArray(Integer[]::new);
         Integer[] expecteds = {2, 3, 4, 6, 7};
-        assertArrayEquals(actuals, expecteds);
+        assertArrayEquals("Unexpected entries order", actuals, expecteds);
         System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLru.data")).exists());
     }
 
-    @org.junit.Test
+    @Test
     public void testCacheLRUHDD() {
         class LocalClassForGetNameMetod {
         }
@@ -56,18 +58,13 @@ public class CacheTestTest {
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
         System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
-        Cache cache = cb.returnCache();
+        Cache cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCache();
         cache.resetStoreCache();
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Заполняем кеш");
         cache = fillCache(cache);
-        Integer[] expecteds = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
+        Integer[] expecteds = cache.getCache().keySet().toArray(new Integer[5]);
         Integer[] actuals = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
@@ -100,14 +97,14 @@ public class CacheTestTest {
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
         System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(TypeCache.LFU, 5, TypeStore.HDD);
-        Cache cache = cb.returnCache();
+        CacheBuilder cb = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD);
+        Cache cache = cb.getCache();
         cache.resetStoreCache();
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Заполняем кеш");
-        cb = new CacheBuilder(TypeCache.LFU, 5, TypeStore.RAM);
-        cache = cb.returnCache();
+        cb = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM);
+        cache = cb.getCache();
         cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
                 .keySet()
@@ -130,8 +127,8 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
         System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(TypeCache.LFU, 5, TypeStore.HDD);
-        Cache cache = cb.returnCache();
+        CacheBuilder cb = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD);
+        Cache cache = cb.getCache();
         cache.resetStoreCache();
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLfu.data")).exists());

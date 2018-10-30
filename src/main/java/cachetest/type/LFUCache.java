@@ -4,7 +4,7 @@
  */
 package cachetest.type;
 
-import cachetest.TypeStore;
+import cachetest.StoreType;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -21,7 +21,7 @@ public class LFUCache extends Cache implements Serializable {
 
     private AlgorithmLFU lfu;
 
-    public LFUCache(int cacheSize, TypeStore typeStore) {
+    LFUCache(int cacheSize, StoreType typeStore) {
         this.size = cacheSize;
         this.typeStore = typeStore;
         this.lfu = new AlgorithmLFU(cacheSize);

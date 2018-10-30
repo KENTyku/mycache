@@ -4,8 +4,8 @@
  */
 package cachetest.type;
 
-import cachetest.TypeCache;
-import cachetest.TypeStore;
+import cachetest.CacheType;
+import cachetest.StoreType;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.util.HashMap;
 
 public abstract class Cache {
 
-    protected TypeStore typeStore;
-    protected TypeCache typeCache;
+    protected StoreType typeStore;
+    protected CacheType typeCache;
     protected int size;
 
     public abstract void addData(int key, String data);

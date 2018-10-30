@@ -17,7 +17,7 @@ public class CacheBuilder {
 
     private Cache cache;  
     
-    CacheBuilder(TypeCache typeCache, int size, TypeStore typeStore) {
+    CacheBuilder(CacheType typeCache, int size, StoreType typeStore) {
 //        this.size = sizeCache;
         switch (typeCache) {
 
@@ -28,12 +28,12 @@ public class CacheBuilder {
                 this.cache = new LFUCache(size, typeStore);
                 break;
                 default:
-                throw new AssertionError(typeCache.name());
+                throw new Exception();
         }
        
     }
     
-    public Cache returnCache(){
+    public Cache getCache(){
         return this.cache;
     }
 }
