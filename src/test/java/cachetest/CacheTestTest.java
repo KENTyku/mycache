@@ -25,7 +25,7 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        
+
         System.out.println("Чистим папку файлов кеша, если она не пустая");
         CacheBuilder cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
         Cache cache = cb.returnCache();
@@ -35,14 +35,13 @@ public class CacheTestTest {
         System.out.println("Проверяем работу кеша");
         cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.RAM);
         cache = cb.returnCache();
-        cache = fillCacheLRU(cache);
+        cache = fillCache(cache);
         Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
-
-        Integer[] expecteds = {1, 2, 5, 6, 7};
+        Integer[] expecteds = {2, 3, 4, 6, 7};
         assertArrayEquals(actuals, expecteds);
         System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLru.data")).exists());
@@ -55,7 +54,7 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        
+
         System.out.println("Чистим папку файлов кеша, если она не пустая");
         CacheBuilder cb = new CacheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
         Cache cache = cb.returnCache();
@@ -63,14 +62,13 @@ public class CacheTestTest {
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Заполняем кеш");
-        cache = fillCacheLRU(cache);
+        cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
-
-        Integer[] actuals = {1, 2, 5, 6, 7};
+        Integer[] actuals = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         assertTrue((new File("cacheLru.data")).exists());
@@ -100,7 +98,7 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        
+
         System.out.println("Чистим папку файлов кеша, если она не пустая");
         CacheBuilder cb = new CacheBuilder(TypeCache.LFU, 5, TypeStore.HDD);
         Cache cache = cb.returnCache();
@@ -110,7 +108,7 @@ public class CacheTestTest {
         System.out.println("Заполняем кеш");
         cb = new CacheBuilder(TypeCache.LFU, 5, TypeStore.RAM);
         cache = cb.returnCache();
-        cache = fillCacheLFU(cache);
+        cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
                 .keySet()
                 .stream()
@@ -138,7 +136,7 @@ public class CacheTestTest {
         System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Заполняем кеш");
-        cache = fillCacheLFU(cache);
+        cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
                 .keySet()
                 .stream()
@@ -169,12 +167,15 @@ public class CacheTestTest {
 
     }
 
-    public Cache fillCacheLFU(Cache cache) {
+    public Cache fillCache(Cache cache) {
         cache.addData(1, "Ижевск");
         cache.addData(2, "Лондон");
         cache.addData(3, "Венеция");
         cache.addData(4, "Берлин");
         cache.addData(5, "Вашингтон");
+        cache.getData(5);
+        cache.getData(5);
+        cache.getData(5);
         cache.getData(1);
         cache.getData(2);
         cache.getData(2);
@@ -182,9 +183,6 @@ public class CacheTestTest {
         cache.getData(3);
         cache.getData(4);
         cache.getData(4);
-        cache.getData(5);
-        cache.getData(5);
-        cache.getData(5);
         cache.addData(6, "Токио");
         cache.getData(6);
         cache.getData(6);
@@ -193,16 +191,4 @@ public class CacheTestTest {
         return cache;
     }
 
-    public Cache fillCacheLRU(Cache cache) {
-        cache.addData(1, "Ижевск");
-        cache.addData(2, "Лондон");
-        cache.addData(3, "Венеция");
-        cache.addData(4, "Берлин");
-        cache.addData(5, "Вашингтон");
-        cache.getData(1);
-        cache.getData(2);
-        cache.addData(6, "Токио");
-        cache.addData(7, "Париж");
-        return cache;
-    }
 }

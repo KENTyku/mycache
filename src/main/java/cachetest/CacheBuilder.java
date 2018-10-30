@@ -15,11 +15,10 @@ import cachetest.type.LRUCache;
  */
 public class CacheBuilder {
 
-    private Cache cache;
-    private final int size;    
+    private Cache cache;  
     
-    CacheBuilder(TypeCache typeCache, int sizeCache, TypeStore typeStore) {
-        this.size = sizeCache;
+    CacheBuilder(TypeCache typeCache, int size, TypeStore typeStore) {
+//        this.size = sizeCache;
         switch (typeCache) {
 
             case LRU:
@@ -28,6 +27,8 @@ public class CacheBuilder {
             case LFU:
                 this.cache = new LFUCache(size, typeStore);
                 break;
+                default:
+                throw new AssertionError(typeCache.name());
         }
        
     }

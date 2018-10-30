@@ -15,13 +15,11 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
+public class LRUCache extends Cache implements Serializable {
 
-    private String type;
     private int key;
     private String data;
-    private int size;
-    private TypeStore typeStore;
+
     private CollectionForCacheLRU cachelru;
 
     public LRUCache(int size, TypeStore typeStore) {
@@ -79,7 +77,6 @@ public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
                 break;
             default:
                 throw new AssertionError(this.typeStore.name());
-
         }
         return data;
     }
@@ -99,7 +96,6 @@ public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
                 break;
             default:
                 throw new AssertionError(this.typeStore.name());
-
         }
 
     }
@@ -126,7 +122,7 @@ public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
      */
     private class CollectionForCacheLRU extends LinkedHashMap<Integer, String> {
 
-        private int maxEntries;
+        private int size;
 
         /**
          * Конструктор создаем как родительсткий с заданными значениями
@@ -135,11 +131,11 @@ public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
          * отображением и невозможность увеличения размера отображения при
          * добавлении в него элементов.
          *
-         * @param maxEntries Размер кэша
+         * @param size Размер кэша
          */
-        public CollectionForCacheLRU(int maxEntries) {
-            super(maxEntries * 2, 0.75f, true);//как конструктор родителя 
-            this.maxEntries = maxEntries;
+        public CollectionForCacheLRU(int size) {
+            super(size * 2, 0.75f, true);//как конструктор родителя 
+            this.size = size;
         }
 
         /**
@@ -160,7 +156,7 @@ public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
          * @return the maxEntries
          */
         public int getMaxEntries() {
-            return maxEntries;
+            return size;
         }
     }
 }

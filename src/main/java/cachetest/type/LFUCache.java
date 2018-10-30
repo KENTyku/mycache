@@ -17,10 +17,7 @@ import java.util.Map.Entry;
  *
  * @author kentyku
  */
-public class LFUCache implements Cache, Serializable,FileOperationsForObjects {
-
-    private final int size;
-    private final TypeStore typeStore;
+public class LFUCache extends Cache implements Serializable {
 
     private AlgorithmLFU lfu;
 
@@ -103,7 +100,6 @@ public class LFUCache implements Cache, Serializable,FileOperationsForObjects {
 
     }
 
-   
     @Override
     public HashMap<Integer, String> getCache() {
         switch (this.typeStore) {
@@ -134,7 +130,7 @@ public class LFUCache implements Cache, Serializable,FileOperationsForObjects {
 
         private final int maxEntries;
         private final HashMap<Integer, CacheEntryLFU> cache;
-        
+
         public AlgorithmLFU(int size) {
             this.cache = new HashMap<>();
             this.maxEntries = size;
@@ -225,7 +221,6 @@ public class LFUCache implements Cache, Serializable,FileOperationsForObjects {
             }
             return cachetemp;
         }
-        
 
         public void resetCache() {
             cache.clear();
