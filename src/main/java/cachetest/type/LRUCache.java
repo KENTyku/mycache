@@ -5,6 +5,7 @@
 package cachetest.type;
 
 import cachetest.StoreType;
+import static cachetest.StoreType.HDD;
 import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -20,9 +21,16 @@ public class LRUCache extends Cache implements Serializable {
     private CollectionForCacheLRU cachelru;
 
     LRUCache(int size, StoreType typeStore) {
-        this.size = size;
-        this.cachelru = new CollectionForCacheLRU(size);
-        this.typeStore = typeStore;
+        super(size, typeStore);
+        if (typeStore == HDD) {
+            try {
+                this.cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
+            } catch (NullPointerException e) {
+                this.cachelru = new CollectionForCacheLRU(size);
+            }
+        } else {
+            this.cachelru = new CollectionForCacheLRU(size);
+        }
     }
 
     /**
@@ -34,12 +42,12 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public void addData(int key, String data) {
         cachelru.put(key, data);
-        if (HDD) {
+        if (this.typeStore == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
 //        switch (this.typeStore) {
 //            case HDD: {
-//                if (cachelru.isEmpty()) {
+//        if (cachelru.isEmpty()) {
 //                    try {
 //                        cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
 //                    } catch (NullPointerException e) {
@@ -69,10 +77,10 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String data = cachelru.get(key);
-        if (HDD) {
+        if (this.typeStore==HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
-        
+
 //        switch (this.typeStore) {
 //            case HDD:
 //                saveToFile(cachelru, "cacheLru.data");
@@ -114,7 +122,8 @@ public class LRUCache extends Cache implements Serializable {
         return cachelru;
     }
 
-    void resetCacheHDD(String fileName) {
+    void resetCacheHDD(String fileName
+    ) {
         File file = new File(fileName);
         if (!file.delete()) {
             System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");

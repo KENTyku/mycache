@@ -15,9 +15,14 @@ import java.util.HashMap;
 
 public abstract class Cache {
 
+    protected int size;
     protected StoreType typeStore;
     protected CacheType typeCache;
-    protected int size;
+
+    Cache(int size, StoreType typeStore) {
+        this.size = size;
+        this.typeStore = typeStore;
+    }
 
     public abstract void addData(int key, String data);
 
@@ -33,7 +38,7 @@ public abstract class Cache {
      * @param fileName
      * @return
      */
-    protected Object loadFromFile(String fileName) throws NullPointerException {
+    protected final Object loadFromFile(String fileName) throws NullPointerException {
         Object obj = null;
         try (FileInputStream fileForRead = new FileInputStream(fileName);
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
@@ -52,7 +57,7 @@ public abstract class Cache {
      * @param obj
      * @param fileName
      */
-    protected void saveToFile(Object obj, String fileName) {
+    protected final void saveToFile(Object obj, String fileName) {
         try (FileOutputStream fileForWrite = new FileOutputStream(fileName);
                 ObjectOutputStream objOS = new ObjectOutputStream(fileForWrite);) {
             objOS.writeObject(obj);

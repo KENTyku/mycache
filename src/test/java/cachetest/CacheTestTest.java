@@ -5,6 +5,7 @@
  */
 package cachetest;
 
+import cachetest.type.CacheBuilder;
 import cachetest.type.Cache;
 import cachetest.type.LRUCache;
 import java.io.File;

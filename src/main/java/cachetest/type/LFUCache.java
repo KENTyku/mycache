@@ -5,6 +5,7 @@
 package cachetest.type;
 
 import cachetest.StoreType;
+import static cachetest.StoreType.HDD;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Comparator;
@@ -21,10 +22,18 @@ public class LFUCache extends Cache implements Serializable {
 
     private AlgorithmLFU lfu;
 
-    LFUCache(int cacheSize, StoreType typeStore) {
-        this.size = cacheSize;
-        this.typeStore = typeStore;
-        this.lfu = new AlgorithmLFU(cacheSize);
+    LFUCache(int size, StoreType typeStore) {
+        super(size, typeStore);
+//          this.lfu = new AlgorithmLFU(size);
+        if (typeStore == HDD) {
+            try {
+                this.lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
+            } catch (NullPointerException e) {
+                this.lfu = new AlgorithmLFU(this.size);
+            }
+        } else {
+            this.lfu = new AlgorithmLFU(this.size);
+        }
 
     }
 
