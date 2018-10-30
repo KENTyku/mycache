@@ -7,7 +7,6 @@ package cachetest;
 
 import cachetest.type.CacheBuilder;
 import cachetest.type.Cache;
-import cachetest.type.LRUCache;
 import java.io.File;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -17,6 +16,8 @@ import org.junit.Test;
  * @author jury
  */
 public class CacheTestTest {
+
+    Cache cache;
 
     public CacheTestTest() {
     }
@@ -29,15 +30,8 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD);
-        Cache cache = cb.getCache();
-        cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
-        assertFalse((new File("cacheLru.data")).exists());
-        System.out.println("Проверяем работу кеша");
-        cb = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM);
-        cache = cb.getCache();
+        System.out.println("Заполняем кеш");
+        cache = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM).getCacheObject();
         cache = fillCache(cache);
         Integer[] actuals = cache.getCache()
                 .keySet()
@@ -45,6 +39,7 @@ public class CacheTestTest {
                 .sorted()
                 .toArray(Integer[]::new);
         Integer[] expecteds = {2, 3, 4, 6, 7};
+        System.out.println("Проверяем работу кеша");
         assertArrayEquals("Unexpected entries order", actuals, expecteds);
         System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLru.data")).exists());
@@ -58,19 +53,14 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        System.out.println("Чистим папку файлов кеша, если она не пустая");
-        Cache cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCache();
-        cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
-        assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Заполняем кеш");
+        cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCacheObject();
         cache = fillCache(cache);
         Integer[] expecteds = cache.getCache().keySet().toArray(new Integer[5]);
         Integer[] actuals = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         assertTrue((new File("cacheLru.data")).exists());
-
         System.out.println("Чистим кеш");
         cache.resetStoreCache();
         System.out.println("Проверяем что почистилась папка");
@@ -87,6 +77,10 @@ public class CacheTestTest {
         actuals[0] = 8;
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
+        System.out.println("Удаляем файл кеша");
+        cache.resetStoreCache();
+        System.out.println("Проверяем что почистилась папка");
+        assertFalse((new File("cacheLru.data")).exists());
     }
 
     @org.junit.Test
@@ -97,15 +91,8 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD);
-        Cache cache = cb.getCache();
-        cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
-        assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Заполняем кеш");
-        cb = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM);
-        cache = cb.getCache();
+        cache = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM).getCacheObject();
         cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
                 .keySet()
@@ -127,12 +114,8 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        System.out.println("Чистим папку файлов кеша, если она не пустая");
-        CacheBuilder cb = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD);
-        Cache cache = cb.getCache();
-        cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
-        assertFalse((new File("cacheLfu.data")).exists());
+
+        cache = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD).getCacheObject();
         System.out.println("Заполняем кеш");
         cache = fillCache(cache);
         Integer[] expecteds = cache.getCache()
@@ -162,6 +145,10 @@ public class CacheTestTest {
         actuals[0] = 8;
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
+        System.out.println("Удаляем файл кеша");
+        cache.resetStoreCache();
+        System.out.println("Проверяем что почистилась папка");
+        assertFalse((new File("cacheLfu.data")).exists());
 
     }
 

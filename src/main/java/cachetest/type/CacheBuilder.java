@@ -6,9 +6,7 @@ package cachetest.type;
 
 import cachetest.CacheType;
 import cachetest.StoreType;
-import cachetest.type.Cache;
-import cachetest.type.LFUCache;
-import cachetest.type.LRUCache;
+
 
 /**
  * The class implements the creation of a specific type of cache
@@ -32,7 +30,7 @@ public class CacheBuilder {
 
     }
 
-    public Cache getCache() {
+    public Cache getCacheObject() {
         return this.cache;
     }
 }

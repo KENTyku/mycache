@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class describing the creation of an LFU cache
@@ -24,12 +26,15 @@ public class LFUCache extends Cache implements Serializable {
 
     LFUCache(int size, StoreType typeStore) {
         super(size, typeStore);
-//          this.lfu = new AlgorithmLFU(size);
-        if (typeStore == HDD) {
+//        this.size = size;
+//        this.typeStore = typeStore;
+
+        if (this.typeStore == HDD) {
             try {
                 this.lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
-            } catch (NullPointerException e) {
+            } catch (MyException e) {
                 this.lfu = new AlgorithmLFU(this.size);
+                saveToFile(this.lfu, "cacheLfu.data");
             }
         } else {
             this.lfu = new AlgorithmLFU(this.size);
@@ -43,30 +48,10 @@ public class LFUCache extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-        switch (this.typeStore) {
-            case HDD: {
-                try {
-                    lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
-                } catch (NullPointerException e) {
-                    lfu = new AlgorithmLFU(this.size);
-                }
-
-                if (!lfu.findKey(key)) {
-                    lfu.addCacheEntry(key, data);
-                    saveToFile(lfu, "cacheLfu.data");
-                }
-            }
-            break;
-            case RAM: {
-                if (!lfu.findKey(key)) {
-                    lfu.addCacheEntry(key, data);
-                }
-            }
-            break;
-            default:
-                throw new AssertionError(this.typeStore.name());
+        lfu.addCacheEntry(key, data);
+        if (this.typeStore == HDD) {
+            saveToFile(lfu, "cacheLfu.data");
         }
-
     }
 
     /**
@@ -76,15 +61,8 @@ public class LFUCache extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String temp = lfu.getCacheEntry(key);
-        switch (this.typeStore) {
-            case HDD:
-                saveToFile(lfu, "cacheLfu.data");
-                break;
-            case RAM:
-                break;
-            default:
-                throw new AssertionError(this.typeStore.name());
-
+        if (this.typeStore == HDD) {
+            saveToFile(lfu, "cacheLfu.data");
         }
         return temp;
     }
@@ -94,31 +72,21 @@ public class LFUCache extends Cache implements Serializable {
      */
     @Override
     public void resetStoreCache() {
-        switch (this.typeStore) {
-            case HDD:
-                resetCacheHDD("cacheLfu.data");
-                lfu.resetCache();
-                break;
-            case RAM:
-                lfu.resetCache();
-                break;
-            default:
-                throw new AssertionError(this.typeStore.name());
-
+        if (this.typeStore == HDD) {
+            resetCacheHDD("cacheLfu.data");
         }
-
+        lfu.resetCache();
     }
 
     @Override
-    public HashMap<Integer, String> getCache() {
-        switch (this.typeStore) {
-            case HDD:
+    public HashMap<Integer, String> getCache(){
+        if (this.typeStore == HDD) {
+            try {
                 lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
-                break;
-            case RAM:
-                break;
-            default:
-                throw new AssertionError(this.typeStore.name());
+            } catch (MyException ex) {
+                this.lfu = new AlgorithmLFU(this.size);
+                saveToFile(this.lfu, "cacheLfu.data");
+            }
         }
         return lfu.getCache();
     }

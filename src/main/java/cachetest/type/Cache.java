@@ -37,8 +37,9 @@ public abstract class Cache {
      *
      * @param fileName
      * @return
+     * @throws cachetest.type.Cache.MyException
      */
-    protected final Object loadFromFile(String fileName) throws NullPointerException {
+    protected final Object loadFromFile(String fileName) throws MyException {
         Object obj = null;
         try (FileInputStream fileForRead = new FileInputStream(fileName);
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
@@ -46,7 +47,7 @@ public abstract class Cache {
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Ошибка загрузки кэша из файла cacheLru.data. "
                     + "Кеш будет создан заново .");
-            throw new NullPointerException();
+            throw new MyException();
         }
         return obj;
     }
@@ -65,5 +66,8 @@ public abstract class Cache {
             System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
                     + "Убедитесь что HDD доступен для записи.");
         }
+    }
+
+    protected class MyException extends Exception {
     }
 }

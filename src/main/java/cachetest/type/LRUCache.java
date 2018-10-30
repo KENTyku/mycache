@@ -22,10 +22,13 @@ public class LRUCache extends Cache implements Serializable {
 
     LRUCache(int size, StoreType typeStore) {
         super(size, typeStore);
+//        this.size = size;
+//        this.typeStore = typeStore;
+
         if (typeStore == HDD) {
             try {
                 this.cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
-            } catch (NullPointerException e) {
+            } catch (MyException e) {
                 this.cachelru = new CollectionForCacheLRU(size);
             }
         } else {
@@ -42,30 +45,9 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public void addData(int key, String data) {
         cachelru.put(key, data);
-        if (this.typeStore == HDD) {
+        if (typeStore == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
-//        switch (this.typeStore) {
-//            case HDD: {
-//        if (cachelru.isEmpty()) {
-//                    try {
-//                        cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
-//                    } catch (NullPointerException e) {
-//                        cachelru = new CollectionForCacheLRU(size);
-//                    }
-//                }
-//
-//                cachelru.put(key, data);
-//                
-//            }
-//            break;
-//            case RAM:
-//                
-//                break;
-//            default:
-//                throw new AssertionError(this.typeStore.name());
-//
-//        }
     }
 
     /**
@@ -77,19 +59,9 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String data = cachelru.get(key);
-        if (this.typeStore==HDD) {
+        if (this.typeStore == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
-
-//        switch (this.typeStore) {
-//            case HDD:
-//                saveToFile(cachelru, "cacheLru.data");
-//                break;
-//            case RAM:
-//                break;
-//            default:
-//                throw new AssertionError(this.typeStore.name());
-//        }
         return data;
     }
 
@@ -98,18 +70,12 @@ public class LRUCache extends Cache implements Serializable {
      */
     @Override
     public void resetStoreCache() {
-        switch (this.typeStore) {
-            case HDD:
-                resetCacheHDD("cacheLru.data");
-                cachelru.clear();
-                break;
-            case RAM:
-                cachelru.clear();
-                break;
-            default:
-                throw new AssertionError(this.typeStore.name());
+        if (this.typeStore == HDD) {
+            resetCacheHDD("cacheLru.data");
+            cachelru.clear();
+        } else {
+            cachelru.clear();
         }
-
     }
 
     /**
