@@ -14,9 +14,9 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CasheGenerator {
+public class CasheBuilder {
 
-    private cachetest.type.CacheBuilder cache;
+    private cachetest.type.Cache cache;
     private final int size;
     
     /**
@@ -26,7 +26,7 @@ public class CasheGenerator {
      * @param sizeCache
      * @param typeStore Type
      */
-    CasheGenerator(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
+    CasheBuilder(TypeCache typeCache, int sizeCache, TypeStore typeStore) {//применить патерн билдер
         this.size = sizeCache;
         switch (typeCache) {
 

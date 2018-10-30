@@ -24,11 +24,11 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        CasheGenerator cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.HDD);
+        CasheBuilder cache = new CasheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
         System.out.println("Удаляем кеш");
         cache.resetCash();
 
-        cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.RAM);
+        cache = new CasheBuilder(TypeCache.LRU, 5, TypeStore.RAM);
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLRU(cache);
@@ -52,7 +52,7 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        CasheGenerator cache = new CasheGenerator(TypeCache.LRU, 5, TypeStore.HDD);
+        CasheBuilder cache = new CasheBuilder(TypeCache.LRU, 5, TypeStore.HDD);
         cache.resetCash();
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Проверяем работу кеша");
@@ -89,11 +89,11 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        CasheGenerator cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.HDD);
+        CasheBuilder cache = new CasheBuilder(TypeCache.LFU, 5, TypeStore.HDD);
         System.out.println("Удаляем кеш");
         cache.resetCash();
 
-        cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.RAM);
+        cache = new CasheBuilder(TypeCache.LFU, 5, TypeStore.RAM);
         assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Проверяем работу кеша");
         cache = workingWithCacheLFU(cache);
@@ -117,7 +117,7 @@ public class CacheTestTest {
         System.out.println("");
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-        CasheGenerator cache = new CasheGenerator(TypeCache.LFU, 5, TypeStore.HDD);
+        CasheBuilder cache = new CasheBuilder(TypeCache.LFU, 5, TypeStore.HDD);
         cache.resetCash();
         assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Проверяем работу кеша");
@@ -149,7 +149,7 @@ public class CacheTestTest {
 
     }
 
-    public CasheGenerator workingWithCacheLFU(CasheGenerator cache) {
+    public CasheBuilder workingWithCacheLFU(CasheBuilder cache) {
         cache.addData(1, "Ижевск");
         cache.addData(2, "Лондон");
         cache.addData(3, "Венеция");
@@ -173,7 +173,7 @@ public class CacheTestTest {
         return cache;
     }
 
-    public CasheGenerator workingWithCacheLRU(CasheGenerator cache) {
+    public CasheBuilder workingWithCacheLRU(CasheBuilder cache) {
         cache.addData(1, "Ижевск");
         cache.addData(2, "Лондон");
         cache.addData(3, "Венеция");

@@ -16,31 +16,23 @@ import java.util.Map.Entry;
  *
  * @author kentyku
  */
-public class CacheLFU implements CacheBuilder, Serializable {
+public class CacheLFU implements Cache, Serializable {
 
     private final int size;
     private final TypeStore typeStore;
 
     private AlgoritmLFU lfu;
 
-    /**
-     * Constructor of class CacheLRU
-     *
-     * @param maxEntries Cashe size
-     * @param typeStore
-     */
-    public CacheLFU(int maxEntries, TypeStore typeStore) {
-        this.size = maxEntries;
+    public CacheLFU(int cacheSize, TypeStore typeStore) {
+        this.size = cacheSize;
         this.typeStore = typeStore;
-        this.lfu = new AlgoritmLFU(maxEntries);
+        this.lfu = new AlgoritmLFU(cacheSize);
 
     }
 
     /**
      * Adding data to the cache and restore or save cashe into DataStore
-     *
-     * @param key unique key
-     * @param data value
+     *    
      */
     @Override
     public void addData(int key, String data) {
@@ -72,9 +64,7 @@ public class CacheLFU implements CacheBuilder, Serializable {
 
     /**
      * Getting data from the cache by key
-     *
-     * @param key unique key
-     * @return data from the cache by key
+     *   
      */
     @Override
     public String getData(int key) {

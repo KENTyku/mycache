@@ -21,7 +21,7 @@ public class CacheTest {
      */
     public static void main(String[] args) throws Exception {//assert-ы
         System.out.println("Тест LRU");
-        CasheGenerator cacheLRU = new CasheGenerator(LRU, 5, RAM);
+        CasheBuilder cacheLRU = new CasheBuilder(LRU, 5, RAM);
         System.out.println("Очистка кеша");
         cacheLRU.resetCash();
         System.out.println("Добавляем данные");
@@ -44,7 +44,7 @@ public class CacheTest {
 
         System.out.println();
         System.out.println("Тест LFU");
-        CasheGenerator cacheLFU = new CasheGenerator(LFU, 5, HDD);
+        CasheBuilder cacheLFU = new CasheBuilder(LFU, 5, HDD);
         System.out.println("Очистка кеша");
         cacheLFU.resetCash();
         //        cacheLFU.showData();
@@ -67,6 +67,7 @@ public class CacheTest {
         System.out.println("Добавляем данные");
         cacheLFU.addData(8, "Киев");
         cacheLFU.printAllCashe();
+        System.out.println(5+6);
     }
 
 }
