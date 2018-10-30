@@ -5,6 +5,7 @@
 package cachetest.type;
 
 import cachetest.TypeStore;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,32 +17,32 @@ import java.util.Map.Entry;
  *
  * @author kentyku
  */
-public class CacheLFU implements Cache, Serializable {
+public class LFUCache implements Cache, Serializable,FileOperationsForObjects {
 
     private final int size;
     private final TypeStore typeStore;
 
-    private AlgoritmLFU lfu;
+    private AlgorithmLFU lfu;
 
-    public CacheLFU(int cacheSize, TypeStore typeStore) {
+    public LFUCache(int cacheSize, TypeStore typeStore) {
         this.size = cacheSize;
         this.typeStore = typeStore;
-        this.lfu = new AlgoritmLFU(cacheSize);
+        this.lfu = new AlgorithmLFU(cacheSize);
 
     }
 
     /**
      * Adding data to the cache and restore or save cashe into DataStore
-     *    
+     *
      */
     @Override
     public void addData(int key, String data) {
         switch (this.typeStore) {
             case HDD: {
                 try {
-                    lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+                    lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
                 } catch (NullPointerException e) {
-                    lfu = new AlgoritmLFU(this.size);
+                    lfu = new AlgorithmLFU(this.size);
                 }
 
                 if (!lfu.findKey(key)) {
@@ -64,7 +65,7 @@ public class CacheLFU implements Cache, Serializable {
 
     /**
      * Getting data from the cache by key
-     *   
+     *
      */
     @Override
     public String getData(int key) {
@@ -87,7 +88,7 @@ public class CacheLFU implements Cache, Serializable {
      */
     @Override
     public void resetStoreCache() {
-         switch (this.typeStore) {
+        switch (this.typeStore) {
             case HDD:
                 resetCacheHDD("cacheLfu.data");
                 lfu.resetCache();
@@ -99,19 +100,15 @@ public class CacheLFU implements Cache, Serializable {
                 throw new AssertionError(this.typeStore.name());
 
         }
-        
+
     }
 
-    /**
-     * View values ​​in the cache
-     *
-     * @return values in the cache
-     */
+   
     @Override
     public HashMap<Integer, String> getCache() {
         switch (this.typeStore) {
             case HDD:
-                lfu = (AlgoritmLFU) loadFromFile("cacheLfu.data");
+                lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
                 break;
             case RAM:
                 break;
@@ -121,24 +118,26 @@ public class CacheLFU implements Cache, Serializable {
         return lfu.getCache();
     }
 
+    void resetCacheHDD(String fileName) {
+        File file = new File(fileName);
+        if (!file.delete()) {
+            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
+        }
+    }
+
     /**
-     * Class implementing LFU-cache
+     * Class implementing LFU-Algorithm
      *
      * @author kentyku
      */
-    private class AlgoritmLFU implements Serializable {
+    private class AlgorithmLFU implements Serializable {
 
         private final int maxEntries;
         private final HashMap<Integer, CacheEntryLFU> cache;
-
-        /**
-         * Constructor
-         *
-         * @param maxEntries It is size cache.
-         */
-        public AlgoritmLFU(int maxEntries) {
+        
+        public AlgorithmLFU(int size) {
             this.cache = new HashMap<>();
-            this.maxEntries = maxEntries;
+            this.maxEntries = size;
         }
 
         public boolean findKey(int key) {
@@ -185,10 +184,10 @@ public class CacheLFU implements Cache, Serializable {
          * @return
          */
         private int getLFUKey() {
-            Comparator<Entry<Integer, CacheEntryLFU>> comparator 
-                    = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2) 
-                            -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue()
-                                    .getFrequency());
+            Comparator<Entry<Integer, CacheEntryLFU>> comparator
+                    = (Entry<Integer, CacheEntryLFU> e1, Entry<Integer, CacheEntryLFU> e2)
+                    -> ((Integer) e1.getValue().getFrequency()).compareTo((Integer) e2.getValue()
+                            .getFrequency());
             int key;
             key = cache
                     .entrySet()
@@ -226,6 +225,7 @@ public class CacheLFU implements Cache, Serializable {
             }
             return cachetemp;
         }
+        
 
         public void resetCache() {
             cache.clear();

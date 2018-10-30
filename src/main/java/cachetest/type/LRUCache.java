@@ -5,6 +5,7 @@
 package cachetest.type;
 
 import cachetest.TypeStore;
+import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,23 +15,17 @@ import java.util.Map;
  *
  * @author kentyku
  */
-public class CacheLRU implements Cache, Serializable {
+public class LRUCache implements Cache, Serializable, FileOperationsForObjects {
 
     private String type;
     private int key;
     private String data;
     private int size;
     private TypeStore typeStore;
-
     private CollectionForCacheLRU cachelru;
 
-    /**
-     * Constructor of class CacheLRU
-     *
-     * @param maxEntries cache size
-     */
-    public CacheLRU(int maxEntries, TypeStore typeStore) {
-        this.size = maxEntries;
+    public LRUCache(int size, TypeStore typeStore) {
+        this.size = size;
         this.cachelru = new CollectionForCacheLRU(size);
         this.typeStore = typeStore;
     }
@@ -117,6 +112,13 @@ public class CacheLRU implements Cache, Serializable {
     @Override
     public LinkedHashMap<Integer, String> getCache() {
         return cachelru;
+    }
+
+    void resetCacheHDD(String fileName) {
+        File file = new File(fileName);
+        if (!file.delete()) {
+            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
+        }
     }
 
     /**
