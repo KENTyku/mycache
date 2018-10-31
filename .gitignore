@@ -1,3 +1,4 @@
 /target/
 /cacheLru.data
 /nbproject/
+/cacheLfu.data

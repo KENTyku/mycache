@@ -30,9 +30,11 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
+        Cache.deleteFile("cacheLfu.data");
+        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM).getCacheObject();
-        cache = fillCache(cache);
+        cache = fillCache();
         Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
@@ -53,9 +55,11 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
+        Cache.deleteFile("cacheLfu.data");
+        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCacheObject();
-        cache = fillCache(cache);
+        cache = fillCache();
         Integer[] actuals = cache.getCache().keySet().toArray(new Integer[5]);
         Integer[] expecteds = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
@@ -91,9 +95,11 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
+        Cache.deleteFile("cacheLfu.data");
+        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM).getCacheObject();
-        cache = fillCache(cache);
+        cache = fillCache();
         Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
@@ -115,9 +121,11 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
+        Cache.deleteFile("cacheLfu.data");
+        Cache.deleteFile("cacheLru.data");
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD).getCacheObject();
         System.out.println("Заполняем кеш");
-        cache = fillCache(cache);
+        cache = fillCache();        
         Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
@@ -152,7 +160,7 @@ public class CacheTestTest {
 
     }
 
-    public Cache fillCache(Cache cache) {
+    public Cache fillCache() {
         cache.addData(1, "Ижевск");
         cache.addData(2, "Лондон");
         cache.addData(3, "Венеция");

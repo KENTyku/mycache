@@ -6,7 +6,6 @@ package cachetest.type;
 
 import cachetest.StoreType;
 import static cachetest.StoreType.HDD;
-import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,8 +21,6 @@ public class LRUCache extends Cache implements Serializable {
 
     LRUCache(int size, StoreType storeType) {
         super(size, storeType);
-//        this.size = size;
-//        this.storeType = storeType;
 
         if (this.storeType == HDD) {
             try {
@@ -78,7 +75,7 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public void resetStoreCache() {
         if (this.storeType == HDD) {
-            resetCacheHDD("cacheLru.data");
+            deleteFile("cacheLru.data");
             cachelru.clear();
         } else {
             cachelru.clear();
@@ -95,14 +92,14 @@ public class LRUCache extends Cache implements Serializable {
         return cachelru;
     }
 
-    void resetCacheHDD(String fileName
-    ) {
-        File file = new File(fileName);
-        if (!file.delete()) {
-            System.out.println("Файл " + fileName 
-                    + " не был найден в корневой папке проекта");
-        }
-    }
+//    void resetCacheHDD(String fileName
+//    ) {
+//        File file = new File(fileName);
+//        if (!file.delete()) {
+//            System.out.println("Файл " + fileName 
+//                    + " не был найден в корневой папке проекта");
+//        }
+//    }
 
     /**
      * Internal Class for

@@ -44,8 +44,7 @@ public class LFUCache extends Cache implements Serializable {
         } else {
             lfu = new AlgorithmLFU(this.size);
         }
-        System.out.println(storeType);
-
+//        System.out.println(storeType);
     }
 
     /**
@@ -54,6 +53,7 @@ public class LFUCache extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
+//        System.out.println(lfu+"TEST");
         lfu.addCacheEntry(key, data);
         if (this.storeType == HDD) {
             saveToFile(lfu, "cacheLfu.data");
@@ -79,7 +79,7 @@ public class LFUCache extends Cache implements Serializable {
     @Override
     public void resetStoreCache() {
         if (this.storeType == HDD) {
-            resetCacheHDD("cacheLfu.data");
+            deleteFile("cacheLfu.data");
         }
         lfu.resetCache();
     }
@@ -89,6 +89,7 @@ public class LFUCache extends Cache implements Serializable {
         if (this.storeType == HDD) {
             try {
                 lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
+                System.out.println(lfu+"TEST****");
 //                if (lfu == null) {
 //                    lfu = new AlgorithmLFU(this.size);
 //                }
@@ -103,13 +104,12 @@ public class LFUCache extends Cache implements Serializable {
         return lfu.getCache();
     }
 
-    void resetCacheHDD(String fileName) {
-        File file = new File(fileName);
-        if (!file.delete()) {
-            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
-        }
-    }
-
+//    void resetCacheHDD(String fileName) {
+//        File file = new File(fileName);
+//        if (!file.delete()) {
+//            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
+//        }
+//    }
     /**
      * Class implementing LFU-Algorithm
      *

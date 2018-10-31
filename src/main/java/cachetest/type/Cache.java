@@ -6,14 +6,16 @@ package cachetest.type;
 
 import cachetest.CacheType;
 import cachetest.StoreType;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 
-public abstract class Cache {
+public abstract class Cache implements Serializable{
 
     protected int size;
     protected StoreType storeType;
@@ -45,7 +47,7 @@ public abstract class Cache {
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
             obj = objIS.readObject();
         } catch (IOException  e) {
-            System.out.println("Ошибка загрузки кэша из файла cacheLru.data. "
+            System.out.println("Ошибка загрузки кэша из файла. "
                     + "Кеш будет создан заново .");
         }
         return obj;
@@ -65,5 +67,11 @@ public abstract class Cache {
             System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
                     + "Убедитесь что HDD доступен для записи.");
         }
-    }   
+    } 
+    protected final void deleteFile(String fileName) {
+        File file = new File(fileName);
+        if (!file.delete()) {
+            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
+        }
+    }
 }
