@@ -24,21 +24,27 @@ public class LFUCache extends Cache implements Serializable {
 
     private AlgorithmLFU lfu;
 
-    LFUCache(int size, StoreType typeStore) {
-        super(size, typeStore);
+    LFUCache(int size, StoreType storeType) {
+        super(size, storeType);
 //        this.size = size;
-//        this.typeStore = typeStore;
+//        this.storeType = storeType;
 
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             try {
-                this.lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
-            } catch (MyException e) {
-                this.lfu = new AlgorithmLFU(this.size);
-                saveToFile(this.lfu, "cacheLfu.data");
+                lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
+                if (lfu == null) {
+                    lfu = new AlgorithmLFU(this.size);
+                }
+            } catch (ClassNotFoundException e) {
+                System.out.println("Некорректный файл кеш. Файл будет создан заново." + e.getMessage());
+                lfu = new AlgorithmLFU(this.size);
+                saveToFile(lfu, "cacheLfu.data");
+
             }
         } else {
-            this.lfu = new AlgorithmLFU(this.size);
+            lfu = new AlgorithmLFU(this.size);
         }
+        System.out.println(storeType);
 
     }
 
@@ -49,7 +55,7 @@ public class LFUCache extends Cache implements Serializable {
     @Override
     public void addData(int key, String data) {
         lfu.addCacheEntry(key, data);
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             saveToFile(lfu, "cacheLfu.data");
         }
     }
@@ -61,7 +67,7 @@ public class LFUCache extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String temp = lfu.getCacheEntry(key);
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             saveToFile(lfu, "cacheLfu.data");
         }
         return temp;
@@ -72,22 +78,28 @@ public class LFUCache extends Cache implements Serializable {
      */
     @Override
     public void resetStoreCache() {
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             resetCacheHDD("cacheLfu.data");
         }
         lfu.resetCache();
     }
 
     @Override
-    public HashMap<Integer, String> getCache(){
-        if (this.typeStore == HDD) {
+    public HashMap<Integer, String> getCache() {
+        if (this.storeType == HDD) {
             try {
                 lfu = (AlgorithmLFU) loadFromFile("cacheLfu.data");
-            } catch (MyException ex) {
-                this.lfu = new AlgorithmLFU(this.size);
+//                if (lfu == null) {
+//                    lfu = new AlgorithmLFU(this.size);
+//                }
+            } catch (ClassNotFoundException ex) {
+                System.out.println("Ошибка файла кеш. "
+                        + "Файл будет создан заново.");
+                lfu = new AlgorithmLFU(this.size);
                 saveToFile(this.lfu, "cacheLfu.data");
             }
         }
+        System.out.println("Error" + lfu);
         return lfu.getCache();
     }
 

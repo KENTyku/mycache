@@ -20,20 +20,27 @@ public class LRUCache extends Cache implements Serializable {
 
     private CollectionForCacheLRU cachelru;
 
-    LRUCache(int size, StoreType typeStore) {
-        super(size, typeStore);
+    LRUCache(int size, StoreType storeType) {
+        super(size, storeType);
 //        this.size = size;
-//        this.typeStore = typeStore;
+//        this.storeType = storeType;
 
-        if (typeStore == HDD) {
+        if (this.storeType == HDD) {
             try {
                 this.cachelru = (CollectionForCacheLRU) loadFromFile("cacheLru.data");
-            } catch (MyException e) {
+                if (this.cachelru == null) {
+                    this.cachelru = new CollectionForCacheLRU(size);
+                }
+            } catch (ClassNotFoundException e) {
+                System.out.println("Некорректный файл кеш."
+                        + " Файл будет создан заново.");
                 this.cachelru = new CollectionForCacheLRU(size);
+                saveToFile(this.cachelru, "cacheLru.data");
             }
         } else {
             this.cachelru = new CollectionForCacheLRU(size);
         }
+        System.out.println(storeType);
     }
 
     /**
@@ -44,8 +51,8 @@ public class LRUCache extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-        cachelru.put(key, data);
-        if (typeStore == HDD) {
+        this.cachelru.put(key, data);
+        if (storeType == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
     }
@@ -59,7 +66,7 @@ public class LRUCache extends Cache implements Serializable {
     @Override
     public String getData(int key) {
         String data = cachelru.get(key);
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
         return data;
@@ -70,7 +77,7 @@ public class LRUCache extends Cache implements Serializable {
      */
     @Override
     public void resetStoreCache() {
-        if (this.typeStore == HDD) {
+        if (this.storeType == HDD) {
             resetCacheHDD("cacheLru.data");
             cachelru.clear();
         } else {
@@ -92,7 +99,8 @@ public class LRUCache extends Cache implements Serializable {
     ) {
         File file = new File(fileName);
         if (!file.delete()) {
-            System.out.println("Файл " + fileName + " не был найден в корневой папке проекта");
+            System.out.println("Файл " + fileName 
+                    + " не был найден в корневой папке проекта");
         }
     }
 

@@ -17,13 +17,13 @@ public class CacheBuilder {
 
     private Cache cache;
 
-    public CacheBuilder(CacheType typeCache, int size, StoreType typeStore) {
-        switch (typeCache) {
+    public CacheBuilder(CacheType cacheType, int size, StoreType storeType) {
+        switch (cacheType) {
             case LRU:
-                this.cache = new LRUCache(size, typeStore);
+                this.cache = new LRUCache(size, storeType);
                 break;
             case LFU:
-                this.cache = new LFUCache(size, typeStore);
+                this.cache = new LFUCache(size, storeType);
                 break;
             default:
         }

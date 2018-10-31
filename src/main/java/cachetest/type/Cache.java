@@ -16,12 +16,12 @@ import java.util.HashMap;
 public abstract class Cache {
 
     protected int size;
-    protected StoreType typeStore;
-    protected CacheType typeCache;
+    protected StoreType storeType;
+    protected CacheType cacheType;
 
-    Cache(int size, StoreType typeStore) {
+    Cache(int size, StoreType storetype) {
         this.size = size;
-        this.typeStore = typeStore;
+        this.storeType = storetype;
     }
 
     public abstract void addData(int key, String data);
@@ -37,17 +37,16 @@ public abstract class Cache {
      *
      * @param fileName
      * @return
-     * @throws cachetest.type.Cache.MyException
+     * @throws java.lang.ClassNotFoundException
      */
-    protected final Object loadFromFile(String fileName) throws MyException {
+    protected final Object loadFromFile(String fileName) throws ClassNotFoundException {
         Object obj = null;
         try (FileInputStream fileForRead = new FileInputStream(fileName);
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
             obj = objIS.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException  e) {
             System.out.println("Ошибка загрузки кэша из файла cacheLru.data. "
                     + "Кеш будет создан заново .");
-            throw new MyException();
         }
         return obj;
     }
@@ -66,8 +65,5 @@ public abstract class Cache {
             System.out.println("Ошибка выгрузки кэша в файл cacheLru.data. "
                     + "Убедитесь что HDD доступен для записи.");
         }
-    }
-
-    protected class MyException extends Exception {
-    }
+    }   
 }

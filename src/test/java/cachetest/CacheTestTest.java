@@ -40,7 +40,7 @@ public class CacheTestTest {
                 .toArray(Integer[]::new);
         Integer[] expecteds = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
-        assertArrayEquals("Unexpected entries order", actuals, expecteds);
+        assertArrayEquals("Unexpected entries order", expecteds, actuals);
         System.out.println("Проверяем что файл кеша не создается");
         assertFalse((new File("cacheLru.data")).exists());
     }
@@ -56,8 +56,8 @@ public class CacheTestTest {
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCacheObject();
         cache = fillCache(cache);
-        Integer[] expecteds = cache.getCache().keySet().toArray(new Integer[5]);
-        Integer[] actuals = {2, 3, 4, 6, 7};
+        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[5]);
+        Integer[] expecteds = {2, 3, 4, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         assertTrue((new File("cacheLru.data")).exists());
@@ -67,14 +67,14 @@ public class CacheTestTest {
         assertFalse((new File("cacheLru.data")).exists());
         System.out.println("Заполняем кеш");
         cache.addData(8, "Киев");
-        expecteds = cache.getCache()
+        actuals = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
 
-        actuals = new Integer[1];
-        actuals[0] = 8;
+        expecteds = new Integer[1];
+        expecteds[0] = 8;
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         System.out.println("Удаляем файл кеша");
@@ -94,13 +94,13 @@ public class CacheTestTest {
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM).getCacheObject();
         cache = fillCache(cache);
-        Integer[] expecteds = cache.getCache()
+        Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
 
-        Integer[] actuals = {3, 4, 5, 6, 7};
+        Integer[] expecteds = {3, 4, 5, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         System.out.println("Проверяем что файл кеша не создается");
@@ -118,13 +118,13 @@ public class CacheTestTest {
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD).getCacheObject();
         System.out.println("Заполняем кеш");
         cache = fillCache(cache);
-        Integer[] expecteds = cache.getCache()
+        Integer[] actuals = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
 
-        Integer[] actuals = {3, 4, 5, 6, 7};
+        Integer[] expecteds = {3, 4, 5, 6, 7};
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         System.out.println("Проверяем что файл кеша создается");
@@ -135,14 +135,14 @@ public class CacheTestTest {
         assertFalse((new File("cacheLfu.data")).exists());
         System.out.println("Заполняем кеш");
         cache.addData(8, "Киев");
-        expecteds = cache.getCache()
+        actuals = cache.getCache()
                 .keySet()
                 .stream()
                 .sorted()
                 .toArray(Integer[]::new);
 
-        actuals = new Integer[1];
-        actuals[0] = 8;
+        expecteds = new Integer[1];
+        expecteds[0] = 8;
         System.out.println("Проверяем работу кеша");
         assertArrayEquals(expecteds, actuals);
         System.out.println("Удаляем файл кеша");
