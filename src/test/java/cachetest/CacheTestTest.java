@@ -30,8 +30,6 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        Cache.deleteFile("cacheLfu.data");
-        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM).getCacheObject();
         cache = fillCache();
@@ -55,8 +53,6 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        Cache.deleteFile("cacheLfu.data");
-        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCacheObject();
         cache = fillCache();
@@ -95,8 +91,6 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        Cache.deleteFile("cacheLfu.data");
-        Cache.deleteFile("cacheLru.data");
         System.out.println("Заполняем кеш");
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM).getCacheObject();
         cache = fillCache();
@@ -121,8 +115,7 @@ public class CacheTestTest {
         System.out.println("Тест "
                 + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        Cache.deleteFile("cacheLfu.data");
-        Cache.deleteFile("cacheLru.data");
+
         cache = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD).getCacheObject();
         System.out.println("Заполняем кеш");
         cache = fillCache();        

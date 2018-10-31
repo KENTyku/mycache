@@ -92,15 +92,6 @@ public class LRUCache extends Cache implements Serializable {
         return cachelru;
     }
 
-//    void resetCacheHDD(String fileName
-//    ) {
-//        File file = new File(fileName);
-//        if (!file.delete()) {
-//            System.out.println("Файл " + fileName 
-//                    + " не был найден в корневой папке проекта");
-//        }
-//    }
-
     /**
      * Internal Class for
      */
