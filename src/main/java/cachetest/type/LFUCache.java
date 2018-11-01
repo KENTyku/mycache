@@ -117,21 +117,16 @@ public class LFUCache extends Cache implements Serializable {
          * @param data for etem cache
          */
         public void addCacheEntry(int key, String data) {
-            if (!isFull()) {
-                CacheEntryLFU temp1 = new CacheEntryLFU();
-                temp1.setData(data);
-                temp1.setFrequency(0);
-
-                cache.put(key, temp1);
-            } else {
+            if (isFull()) {
                 int entryKeyToBeRemoved = getLFUKey();
                 cache.remove(entryKeyToBeRemoved);
-
-                CacheEntryLFU temp = new CacheEntryLFU();
-                temp.setData(data);
-                temp.setFrequency(0);
-
-                cache.put(key, temp);
+            }
+            CacheEntryLFU entry = new CacheEntryLFU();
+            entry.setData(data);
+            entry.setFrequency(0);
+            if (this.cache.putIfAbsent(key, entry) != null) {
+                System.out.println("Значение с данным ключом " + key + " уже присутствует, "
+                        + "поэтому не может быть добавлено");
             }
         }
 

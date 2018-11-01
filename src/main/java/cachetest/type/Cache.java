@@ -47,8 +47,8 @@ public abstract class Cache implements Serializable {
                 ObjectInputStream objIS = new ObjectInputStream(fileForRead)) {
             obj = objIS.readObject();
         } catch (IOException e) {
-            System.out.println("Ошибка загрузки кэша из файла. "
-                    + "Кеш будет создан заново .");
+            System.out.println("Файл кэша не найдет. "
+                    + "Файл кеша будет создан заново.");
         }
         return obj;
     }

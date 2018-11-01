@@ -18,142 +18,72 @@ import org.junit.Test;
 public class CacheTestTest {
 
     Cache cache;
+    int size = 5;
 
     public CacheTestTest() {
     }
 
     @Test
     public void testCacheLRURAM() {
-        class LocalClassForGetNameMetod {
-        }
-        System.out.println("");
-        System.out.println("Тест "
-                + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
 
-        System.out.println("Заполняем кеш");
-        cache = new CacheBuilder(CacheType.LRU, 5, StoreType.RAM).getCacheObject();
-        cache = fillCache();
-        Integer[] actuals = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
+        cache = new CacheBuilder(CacheType.LRU, size, StoreType.RAM).getCacheObject();
+        fillCache();
+        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[size]);
         Integer[] expecteds = {2, 3, 4, 6, 7};
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals("Unexpected entries order", expecteds, actuals);
-        System.out.println("Проверяем что файл кеша не создается");
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         assertFalse((new File("cacheLru.data")).exists());
     }
 
     @Test
     public void testCacheLRUHDD() {
-        class LocalClassForGetNameMetod {
-        }
-        System.out.println("");
-        System.out.println("Тест "
-                + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-
-        System.out.println("Заполняем кеш");
-        cache = new CacheBuilder(CacheType.LRU, 5, StoreType.HDD).getCacheObject();
-        cache = fillCache();
-        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[5]);
+        cache = new CacheBuilder(CacheType.LRU, size, StoreType.HDD).getCacheObject();
+        fillCache();
+        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[size]);
         Integer[] expecteds = {2, 3, 4, 6, 7};
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals(expecteds, actuals);
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         assertTrue((new File("cacheLru.data")).exists());
-        System.out.println("Чистим кеш");
         cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLru.data")).exists());
-        System.out.println("Заполняем кеш");
         cache.addData(8, "Киев");
-        actuals = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
-
-        expecteds = new Integer[1];
+        actuals = cache.getCache().keySet().toArray(new Integer[size]);
+        expecteds = new Integer[size];
         expecteds[0] = 8;
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals(expecteds, actuals);
-        System.out.println("Удаляем файл кеша");
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLru.data")).exists());
     }
 
-    @org.junit.Test
+    @Test
     public void testCacheLFURAM() {
-        class LocalClassForGetNameMetod {
-        }
-        System.out.println("");
-        System.out.println("Тест "
-                + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-
-        System.out.println("Заполняем кеш");
-        cache = new CacheBuilder(CacheType.LFU, 5, StoreType.RAM).getCacheObject();
-        cache = fillCache();
-        Integer[] actuals = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
-
+        cache = new CacheBuilder(CacheType.LFU, size, StoreType.RAM).getCacheObject();
+        fillCache();
+        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[size]);
         Integer[] expecteds = {3, 4, 5, 6, 7};
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals(expecteds, actuals);
-        System.out.println("Проверяем что файл кеша не создается");
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         assertFalse((new File("cacheLfu.data")).exists());
     }
 
-    @org.junit.Test
+    @Test
     public void testCacheLFUHDD() {
-        class LocalClassForGetNameMetod {
-        }
-        System.out.println("");
-        System.out.println("Тест "
-                + (LocalClassForGetNameMetod.class.getEnclosingMethod().getName()));
-
-
-        cache = new CacheBuilder(CacheType.LFU, 5, StoreType.HDD).getCacheObject();
-        System.out.println("Заполняем кеш");
-        cache = fillCache();        
-        Integer[] actuals = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
-
+        cache = new CacheBuilder(CacheType.LFU, size, StoreType.HDD).getCacheObject();
+        fillCache();
+        Integer[] actuals = cache.getCache().keySet().toArray(new Integer[size]);
         Integer[] expecteds = {3, 4, 5, 6, 7};
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals(expecteds, actuals);
-        System.out.println("Проверяем что файл кеша создается");
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         assertTrue((new File("cacheLfu.data")).exists());
-        System.out.println("Удаляем кэш");
         cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLfu.data")).exists());
-        System.out.println("Заполняем кеш");
         cache.addData(8, "Киев");
-        actuals = cache.getCache()
-                .keySet()
-                .stream()
-                .sorted()
-                .toArray(Integer[]::new);
-
-        expecteds = new Integer[1];
+        actuals = cache.getCache().keySet().toArray(new Integer[size]);
+        expecteds = new Integer[size];
         expecteds[0] = 8;
-        System.out.println("Проверяем работу кеша");
-        assertArrayEquals(expecteds, actuals);
-        System.out.println("Удаляем файл кеша");
+        assertArrayEquals("Unexpected entries cache", expecteds, actuals);
         cache.resetStoreCache();
-        System.out.println("Проверяем что почистилась папка");
         assertFalse((new File("cacheLfu.data")).exists());
 
     }
 
-    public Cache fillCache() {
+    public void fillCache() {
         cache.addData(1, "Ижевск");
         cache.addData(2, "Лондон");
         cache.addData(3, "Венеция");
@@ -174,7 +104,6 @@ public class CacheTestTest {
         cache.getData(6);
         cache.getData(6);
         cache.addData(7, "Париж");
-        return cache;
     }
 
 }

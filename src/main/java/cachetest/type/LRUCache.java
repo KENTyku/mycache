@@ -36,8 +36,7 @@ public class LRUCache extends Cache implements Serializable {
             }
         } else {
             this.cachelru = new CollectionForCacheLRU(size);
-        }
-        System.out.println(storeType);
+        }        
     }
 
     /**
@@ -48,7 +47,11 @@ public class LRUCache extends Cache implements Serializable {
      */
     @Override
     public void addData(int key, String data) {
-        this.cachelru.put(key, data);
+        if(this.cachelru.putIfAbsent(key, data)!=null){
+            System.out.println("Значение с данным ключом "+key+" уже присутствует, "
+                    + "поэтому не может быть добавлено");
+        }
+//        this.cachelru.put(key, data);
         if (storeType == HDD) {
             saveToFile(cachelru, "cacheLru.data");
         }
